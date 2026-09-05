@@ -328,18 +328,45 @@ function handleCallback_(cb) {
   }
 }
 
-/** Подключить бота к этому веб-приложению. Запустите один раз после развёртывания. */
+/** Забирает новые сообщения бота и отвечает на них.
+ *  Вебхук с Apps Script не работает — на POST он отдаёт редирект, а Telegram его не выполняет,
+ *  поэтому опрашиваем сами: триггер запускает эту функцию раз в минуту. */
+function pollBot() {
+  if (!TELEGRAM_TOKEN) return;
+  var props = PropertiesService.getScriptProperties();
+  var offset = Number(props.getProperty('TG_OFFSET') || 0);
+  for (var round = 0; round < 3; round++) {          // до 300 сообщений за один запуск
+    var url = 'https://api.telegram.org/bot' + TELEGRAM_TOKEN +
+      '/getUpdates?timeout=0&limit=100' + (offset ? '&offset=' + offset : '');
+    var data;
+    try { data = JSON.parse(UrlFetchApp.fetch(url, {muteHttpExceptions: true}).getContentText() || '{}'); }
+    catch (err) { Logger.log('Бот, опрос: ' + err); return; }
+    if (!data.ok || !data.result || !data.result.length) return;
+    data.result.forEach(function (u) {
+      if (u.update_id >= offset) offset = u.update_id + 1;
+      try { handleTelegram_(u); }
+      catch (err) { Logger.log('Бот, обработка: ' + err); }
+    });
+    props.setProperty('TG_OFFSET', String(offset));   // прочитанное не разбираем повторно
+    if (data.result.length < 100) return;
+  }
+}
+
+/** Подключить бота. Запустите один раз после развёртывания новой версии. */
 function setupBot() {
-  var url = ScriptApp.getService().getUrl();
-  var r = tg_('setWebhook', {url: url, allowed_updates: JSON.stringify(['message', 'callback_query'])});
-  Logger.log('Адрес веб-приложения: ' + url);
-  Logger.log('Подключение бота: ' + JSON.stringify(r));
+  tg_('deleteWebhook', {});                           // опрос и вебхук вместе не живут
   tg_('setMyCommands', {commands: JSON.stringify([
     {command: 'new', description: 'новые заявки'},
     {command: 'work', description: 'заявки в работе'},
     {command: 'last', description: 'последние заявки'},
     {command: 'who', description: 'кто получает уведомления'},
     {command: 'stop', description: 'отписаться'}])});
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'pollBot') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('pollBot').timeBased().everyMinutes(1).create();
+  pollBot();                                          // сразу разбираем накопившееся
+  Logger.log('Бот подключён: сообщения забираются раз в минуту');
 }
 
 function doPost(e) {
