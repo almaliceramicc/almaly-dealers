@@ -6,7 +6,7 @@ const COMPANY = {
   phone: '+7 499 390-78-88',            // основной телефон офиса продаж
   email: 'almaliceramic@mail.ru',       // основная почта
   whatsapp: '79253907888',              // ← WhatsApp менеджера, формат 7XXXXXXXXXX без плюса
-  site: 'https://unus777.github.io/almaly-dealers/',
+  site: 'https://almaliceramicc.github.io/almaly-dealers/',
 };
 
 /* Адреса шоу-румов и складов — показываются в подвале всех страниц. */
@@ -29,7 +29,7 @@ const OFFICES = [
 const HAS_CONTACTS = () => !/0{3}-00-00/.test(COMPANY.phone) && !COMPANY.email.startsWith('zakaz@almaly-keramik');
 
 /* Репозиторий портала — в него редактор каталога сохраняет фотографии. */
-const REPO = 'Unus777/almaly-dealers';
+const REPO = 'almaliceramicc/almaly-dealers';
 
 /* Приём заявок: веб-приложение Google Apps Script, заявки падают в Google-таблицу.
    Если адрес очистить, сайт вернётся в режим «заявка ссылкой в WhatsApp». */
