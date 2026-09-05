@@ -11,6 +11,8 @@ Telegram доставляет сообщения боту двумя спосо�
 
 ## Настройка
 
+Рабочий адрес: `https://almali-bot.unus-abuzarov.workers.dev`
+
 1. `dash.cloudflare.com` → **Workers & Pages** → **Create** → **Worker** → имя, например `almali-bot`.
 2. **Deploy**, затем **Edit code** — вставить содержимое `worker.js`.
 3. В первых строках указать:
