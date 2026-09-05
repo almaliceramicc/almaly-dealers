@@ -170,8 +170,15 @@ function testNotify() {
 /** Вызов Telegram API. Ошибки не роняют скрипт — уходят в журнал. */
 function tg_(method, payload) {
   try {
+    // числа в payload Apps Script отдаёт как «1.05E9» — Telegram такой chat_id не понимает,
+    // поэтому всё приводим к строке сами
+    var form = {};
+    Object.keys(payload || {}).forEach(function (k) {
+      var v = payload[k];
+      form[k] = typeof v === 'number' ? v.toFixed(0) : String(v);
+    });
     var res = UrlFetchApp.fetch('https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/' + method,
-      {method: 'post', muteHttpExceptions: true, payload: payload});
+      {method: 'post', muteHttpExceptions: true, payload: form});
     var body = JSON.parse(res.getContentText() || '{}');
     if (!body.ok) Logger.log('Telegram ' + method + ': ' + (body.description || res.getContentText()));
     return body;
