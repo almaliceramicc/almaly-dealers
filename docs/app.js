@@ -19,6 +19,10 @@ function packInfo(t) {
 /** Дилер вводит метры — считаем целые упаковки с округлением вверх. */
 const packsFor = (need, sqm) => Math.max(1, Math.ceil(need / sqm));
 
+/** Довоз со склада Тверь в Москву — один день. Меняется здесь, применяется везде. */
+const TVER_ETA = 'Доставка в Москву — 1 день';
+const TVER_ETA_LOW = 'доставка в Москву — 1 день';   // для середины предложения
+
 /* ponytail: порог «мало» — 30 м² (≈20 упаковок 60×120); вынести в config, если появится своя норма. */
 const LOW_SQM = 30;
 /** Наличие словом и цветом: зелёный — достаточно, янтарный — мало, нейтральный — под заказ. */
@@ -189,7 +193,8 @@ async function renderCatalog() {
         <div class="row"><span class="avail ${av.cls}">${av.text}</span></div>
         <div class="meta"><span class="tag">${t.format} см</span><span class="tag">${esc(t.surface)}</span>
           <span class="tag">${nf(sqm)} м² / уп.</span></div>
-        <div class="stock">${stockRow('Москва', t.stock.msk)}${stockRow('Тверь', t.stock.tver)}</div>
+        <div class="stock">${stockRow('Москва', t.stock.msk)}${stockRow('Тверь', t.stock.tver)}
+          ${t.stock.tver > 0 ? `<span class="eta">Тверь · ${TVER_ETA_LOW}</span>` : ''}</div>
       </div>
       <div class="quick">
         <span class="qty-wrap">
@@ -382,6 +387,7 @@ async function renderTile() {
             <tr><th>Тверь</th><td>${m2(t.stock.tver)}</td></tr>
             ${res > 0 ? `<tr><th>В резерве</th><td>${m2(res)}</td></tr>` : ''}
           </table>
+          ${t.stock.tver > 0 ? `<p class="eta-note">Со склада Тверь: ${TVER_ETA_LOW}.</p>` : ''}
         </div>
 
         <div class="panel accent">
@@ -392,7 +398,7 @@ async function renderTile() {
             <div class="field"><label for="wh-sel">Склад отгрузки</label>
               <select id="wh-sel">
                 <option value="Москва">Москва — ${m2(t.stock.msk)}</option>
-                <option value="Тверь">Тверь — ${m2(t.stock.tver)}</option>
+                <option value="Тверь">Тверь — ${m2(t.stock.tver)} · +1 день</option>
                 <option value="Под заказ">Под заказ</option>
               </select></div>
           </div>
@@ -427,12 +433,18 @@ async function renderTile() {
       <div class="calc-cell"><b>${nf(real)}</b><span>м² к отгрузке</span></div>
       ${kg ? `<div class="calc-cell quiet"><b>${nf(packs * kg, 0)}</b><span>кг, ориентировочно</span></div>` : ''}`;
     const other = whSel.value === 'Москва' ? ['Тверь', t.stock.tver] : ['Москва', t.stock.msk];
-    $('#calc-note').innerHTML = real <= avail ? '' : `<div class="note warn" style="margin-top:12px">
+    const eta = whSel.value === 'Тверь'
+      ? `<div class="note" style="margin-top:12px">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+             <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg>
+           <span>Отгрузка со склада Тверь: ${TVER_ETA_LOW}, на день дольше, чем из Москвы.</span></div>`
+      : '';
+    $('#calc-note').innerHTML = eta + (real <= avail ? '' : `<div class="note warn" style="margin-top:12px">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
         <path d="M12 8v5M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
       <span>На складе ${whSel.value} свободно ${m2(avail)}.
       ${other[1] > 0 ? `На складе ${other[0]} — ${m2(other[1])}.` : ''}
-      Недостающее оформим под заказ — менеджер подтвердит срок.</span></div>`;
+      Недостающее оформим под заказ — менеджер подтвердит срок.</span></div>`);
     const info = $('#sticky-info');
     if (info) info.innerHTML = `<b>${packs} уп. · ${nf(real)} м²</b>${esc(whSel.value)}`;
   };
