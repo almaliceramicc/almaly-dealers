@@ -756,9 +756,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 126.0,
+    "msk": 115.92,
     "tver": 175.68,
-    "msk_res": 0.0,
+    "msk_res": 2.88,
     "tver_res": 144.0
    },
    "photos": []
@@ -820,7 +820,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 117.36,
+    "msk": 94.32,
     "tver": 300.96,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -836,7 +836,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 110.88,
+    "msk": 100.8,
     "tver": 254.88,
     "msk_res": 44.64,
     "tver_res": 0.0
@@ -1012,7 +1012,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 165.6,
+    "msk": 160.2,
     "tver": 1158.84,
     "msk_res": 0.0,
     "tver_res": 0.0
