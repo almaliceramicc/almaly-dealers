@@ -33,12 +33,18 @@ def rows():
         yield from csv.DictReader(io.StringIO(text))
 
 
+# Артикулы, которые нужны в каталоге независимо от статуса в таблице.
+FORCE_ARTS = {"VHP600801"}          # Статуарио: в таблице «думаем», на сайте держим
+
+
 def catalog():
     tiles = []
     for row in rows():
         art, name = row["Артикулы"].strip(), norm(row["НАЗВАНИЯ"])
         status = row["Статус арт."].strip().lower()
-        if not art or not name or status not in ("рабочий арт", "new"):
+        if not art or not name:
+            continue
+        if status not in ("рабочий арт", "new") and art not in FORCE_ARTS:
             continue
         tiles.append({
             "art": art,
