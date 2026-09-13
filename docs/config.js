@@ -18,7 +18,7 @@ const OFFICES = [
     email: 'almaliceramic@mail.ru',
   },
   {
-    title: 'Шоу-рум, склад и офис продаж',
+    title: 'Склад',
     address: 'г. Балашиха, Квартал Щитниково, 3ж',
     phones: ['+7 936 308-01-01'],
     email: '89363080101@mail.ru',
