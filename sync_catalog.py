@@ -35,14 +35,23 @@ def rows():
         yield from csv.DictReader(io.StringIO(head + "\n" + rest))
 
 
+# Кириллические буквы-двойники в артикулах: «VHF600085С» и «VHF600085C» — одна плитка.
+CYR = str.maketrans("АВЕКМНОРСТУХ", "ABEKMHOPCTYX")
+
+
+def wanted_arts(path):
+    """Список артикулов для каталога из arts.txt (по одному в строке, # — комментарий)."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return {a.strip().upper().translate(CYR) for a in lines if a.strip() and not a.startswith("#")}
+
+
 def catalog():
+    want = wanted_arts(Path(__file__).parent / "arts.txt")
     tiles = []
     for row in rows():
         art, name = row["Артикулы"].strip(), norm(row["НАЗВАНИЯ"])
         status = row["Статус арт."].strip().lower()
-        if not art or not name:
-            continue
-        if status != "рабочий арт":
+        if not name or art.upper().translate(CYR) not in want:
             continue
         tiles.append({
             "art": art,
@@ -55,6 +64,9 @@ def catalog():
             "stock": {"msk": num(row["СКЛАД Москва"]), "tver": num(row["СКЛАД Тверь"]),
                       "msk_res": num(row["РЕЗЕРВ Москва"]), "tver_res": num(row["РЕЗЕРВ Тверь"])},
         })
+    lost = want - {t["art"].upper().translate(CYR) for t in tiles}
+    if lost:
+        print("Нет в таблице (карточки не будет):", ", ".join(sorted(lost)))
     return tiles
 
 
