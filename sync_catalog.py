@@ -30,11 +30,9 @@ def rows():
     for gid in TABS.values():
         url = f"https://docs.google.com/spreadsheets/d/{SHEET}/export?format=csv&gid={gid}"
         text = urllib.request.urlopen(url, timeout=30).read().decode("utf-8")
-        yield from csv.DictReader(io.StringIO(text))
-
-
-# Артикулы, которые нужны в каталоге независимо от статуса в таблице.
-FORCE_ARTS = {"VHP600801"}          # Статуарио: в таблице «думаем», на сайте держим
+        head, _, rest = text.partition("\n")
+        head = "Артикулы" + head[head.index(","):]   # первую колонку в таблице переименовывают
+        yield from csv.DictReader(io.StringIO(head + "\n" + rest))
 
 
 def catalog():
@@ -44,7 +42,7 @@ def catalog():
         status = row["Статус арт."].strip().lower()
         if not art or not name:
             continue
-        if status not in ("рабочий арт", "new") and art not in FORCE_ARTS:
+        if status != "рабочий арт":
             continue
         tiles.append({
             "art": art,

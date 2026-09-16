@@ -83,9 +83,9 @@
    "is_new": false,
    "stock": {
     "msk": 136.08,
-    "tver": 547.92,
+    "tver": 107.92,
     "msk_res": 0.0,
-    "tver_res": 0.0
+    "tver_res": 440.0
    },
    "photos": [
     "01",
@@ -182,9 +182,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 169.2,
+    "msk": 0.0,
     "tver": 0.0,
-    "msk_res": 0.0,
+    "msk_res": 169.2,
     "tver_res": 0.0
    },
    "photos": [
@@ -208,7 +208,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 166.32,
+    "msk": 144.72,
     "tver": 597.6,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -284,9 +284,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 136.08,
+    "msk": 131.76,
     "tver": 275.04,
-    "msk_res": 0.0,
+    "msk_res": 4.32,
     "tver_res": 0.0
    },
    "photos": [
@@ -331,7 +331,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 123.12,
+    "msk": 110.16,
     "tver": 151.2,
     "msk_res": 2.88,
     "tver_res": 0.0
@@ -356,9 +356,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 138.96,
+    "msk": 66.96,
     "tver": 1276.56,
-    "msk_res": 28.8,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -431,7 +431,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 71.28,
+    "msk": 38.16,
     "tver": 0.0,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -454,9 +454,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 105.12,
+    "msk": 86.4,
     "tver": 148.32,
-    "msk_res": 105.12,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -481,7 +481,7 @@
    "stock": {
     "msk": 164.16,
     "tver": 459.36,
-    "msk_res": 2.88,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -503,7 +503,7 @@
    "stock": {
     "msk": 161.28,
     "tver": 164.16,
-    "msk_res": 44.64,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -551,9 +551,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 150.12,
+    "msk": 146.88,
     "tver": 651.96,
-    "msk_res": 16.2,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -572,7 +572,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 230.76,
+    "msk": 227.52,
     "tver": 1533.6,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -598,7 +598,7 @@
    "stock": {
     "msk": 0.0,
     "tver": 74.16,
-    "msk_res": 60.84,
+    "msk_res": 57.6,
     "tver_res": 46.8
    },
    "photos": [
@@ -618,7 +618,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 142.2,
+    "msk": 138.96,
     "tver": 639.36,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -639,9 +639,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 137.88,
+    "msk": 134.64,
     "tver": 279.72,
-    "msk_res": 32.4,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -664,9 +664,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 71.64,
+    "msk": 21.6,
     "tver": 64.8,
-    "msk_res": 73.8,
+    "msk_res": 52.2,
     "tver_res": 0.0
    },
    "photos": [
@@ -686,9 +686,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 180.36,
+    "msk": 177.12,
     "tver": 2020.68,
-    "msk_res": 1.8,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -711,7 +711,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 233.28,
+    "msk": 230.04,
     "tver": 470.88,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -729,7 +729,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 160.2,
+    "msk": 156.96,
     "tver": 1158.84,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -754,7 +754,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 187.2,
+    "msk": 186.84,
     "tver": 1233.0,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -779,7 +779,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 152.64,
+    "msk": 149.4,
     "tver": 675.72,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -800,9 +800,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 197.64,
+    "msk": 194.4,
     "tver": 354.96,
-    "msk_res": 25.2,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -822,7 +822,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 239.4,
+    "msk": 236.16,
     "tver": 609.12,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -847,9 +847,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 169.56,
+    "msk": 166.32,
     "tver": 1095.12,
-    "msk_res": 30.6,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -865,7 +865,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 272.16,
+    "msk": 268.92,
     "tver": 584.28,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -884,7 +884,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 283.68,
+    "msk": 280.44,
     "tver": 599.04,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -906,7 +906,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 412.56,
+    "msk": 409.32,
     "tver": 511.2,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -925,7 +925,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 149.4,
+    "msk": 146.16,
     "tver": 308.52,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -946,9 +946,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 116.28,
+    "msk": 113.04,
     "tver": 451.8,
-    "msk_res": 14.4,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -971,7 +971,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 54.36,
+    "msk": 51.12,
     "tver": 0.0,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -996,7 +996,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 368.64,
+    "msk": 365.4,
     "tver": 1927.8,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1017,7 +1017,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 87.12,
+    "msk": 83.88,
     "tver": 46.44,
     "msk_res": 77.4,
     "tver_res": 0.0
@@ -1038,7 +1038,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 144.72,
+    "msk": 141.48,
     "tver": 484.92,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1088,7 +1088,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 87.84,
+    "msk": 84.6,
     "tver": 0.0,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1130,7 +1130,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 144.36,
+    "msk": 141.12,
     "tver": 640.08,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1155,7 +1155,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 128.88,
+    "msk": 125.64,
     "tver": 341.28,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1192,7 +1192,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 43.92,
+    "msk": 40.68,
     "tver": 0.0,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1210,7 +1210,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 431.28,
+    "msk": 428.04,
     "tver": 222.12,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1227,28 +1227,6 @@
    ]
   },
   {
-   "art": "VHP600801",
-   "name": "Статуарио",
-   "format": "60×60",
-   "surface": "Глянец",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": false,
-   "stock": {
-    "msk": 129.6,
-    "tver": 1143.72,
-    "msk_res": 30.6,
-    "tver_res": 0.0
-   },
-   "photos": [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05"
-   ]
-  },
-  {
    "art": "VHF600080",
    "name": "Террацио Грей",
    "format": "60×60",
@@ -1257,7 +1235,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 420.12,
+    "msk": 416.88,
     "tver": 436.32,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1282,7 +1260,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 126.84,
+    "msk": 123.6,
     "tver": 546.48,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1300,29 +1278,6 @@
    ]
   },
   {
-   "art": "VHP600853",
-   "name": "Элли Крем",
-   "format": "60×60",
-   "surface": "Глянец",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": false,
-   "stock": {
-    "msk": 172.44,
-    "tver": 1473.84,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06"
-   ]
-  },
-  {
    "art": "VHF612501",
    "name": "Бетон Лайт",
    "format": "60×120",
@@ -1331,40 +1286,8 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 158.4,
+    "msk": 120.96,
     "tver": 635.04,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHP612398",
-   "name": "Галина Грей",
-   "format": "60×120",
-   "surface": "Глянец",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0.72,
-    "tver": 0.0,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHF612114",
-   "name": "Галина Грей Мат",
-   "format": "60×120",
-   "surface": "Матовая",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": true,
-   "stock": {
-    "msk": 144.0,
-    "tver": 293.76,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1387,54 +1310,6 @@
    "photos": []
   },
   {
-   "art": "VHF612822",
-   "name": "Лиам Крем Мат",
-   "format": "60×120",
-   "surface": "Матовая",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": true,
-   "stock": {
-    "msk": 144.0,
-    "tver": 573.12,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHF612800",
-   "name": "Миррор Вайт Мат",
-   "format": "60×120",
-   "surface": "Матовая",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0.0,
-    "tver": 0.0,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHF612122",
-   "name": "Травертин",
-   "format": "60×120",
-   "surface": "Матовая",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": true,
-   "stock": {
-    "msk": 144.0,
-    "tver": 640.4,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
    "art": "VHM612805",
    "name": "Эмперадор",
    "format": "60×120",
@@ -1443,9 +1318,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 120.24,
+    "msk": 61.2,
     "tver": 597.6,
-    "msk_res": 123.84,
+    "msk_res": 59.04,
     "tver_res": 0.0
    },
    "photos": []
@@ -1459,7 +1334,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 112.68,
+    "msk": 109.44,
     "tver": 964.08,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1475,56 +1350,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 108.0,
+    "msk": 104.76,
     "tver": 102.24,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHFZ600837",
-   "name": "Графит Блек",
-   "format": "60×60",
-   "surface": "Матовая",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0.0,
-    "tver": 0.0,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHP600289",
-   "name": "Луна Грей Дарк",
-   "format": "60×60",
-   "surface": "Глянец",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": true,
-   "stock": {
-    "msk": 140.4,
-    "tver": 673.2,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHP600288",
-   "name": "Луна Грей Лайт",
-   "format": "60×60",
-   "surface": "Глянец",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": true,
-   "stock": {
-    "msk": 140.4,
-    "tver": 669.6,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1539,25 +1366,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 119.88,
+    "msk": 116.64,
     "tver": 251.64,
     "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHF600252",
-   "name": "Оникс Грей Мат",
-   "format": "60×60",
-   "surface": "Матовая",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0.0,
-    "tver": 0.0,
-    "msk_res": 37.8,
     "tver_res": 0.0
    },
    "photos": []
@@ -1571,24 +1382,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 112.32,
+    "msk": 109.08,
     "tver": 232.2,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHF600249",
-   "name": "Травертин",
-   "format": "60×60",
-   "surface": "Матовая",
-   "packing": "1 уп-5 шт-1,8 м2-34кг",
-   "pallet": "1пал-46,8м2-26 уп-884кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0.0,
-    "tver": 0.0,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
