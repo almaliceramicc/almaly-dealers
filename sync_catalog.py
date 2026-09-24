@@ -77,6 +77,12 @@ def main():
     tiles = [t | {"photos": photos.get(t["art"], [])} for t in catalog()]
     tiles.sort(key=lambda t: (not t["photos"], t["format"], t["name"]))
 
+    # Таблицу правят вручную: переименованная колонка артикулов однажды уже оставила
+    # портал с пустым каталогом. Лучше уронить прогон, чем стереть живой сайт.
+    if len(tiles) < max(1, len(old["tiles"]) // 2):
+        raise SystemExit(f"Отказ: из таблицы собралось {len(tiles)} карточек вместо {len(old['tiles'])}. "
+                         "data.json не тронут — проверьте колонку «Артикулы» и arts.txt.")
+
     DATA.write_text(json.dumps({"tiles": tiles}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"моделей: {len(tiles)}, с фото: {sum(1 for t in tiles if t['photos'])}")
 
