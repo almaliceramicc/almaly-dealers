@@ -85,7 +85,7 @@
     "msk": 0.0,
     "tver": 0.0,
     "msk_res": 185.76,
-    "tver_res": 43.92
+    "tver_res": 42.48
    },
    "photos": [
     "01",
@@ -207,7 +207,7 @@
    "is_new": false,
    "stock": {
     "msk": 147.6,
-    "tver": 369.36,
+    "tver": 367.92,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -284,9 +284,9 @@
    "is_new": false,
    "stock": {
     "msk": 200.88,
-    "tver": 83.52,
-    "msk_res": 106.56,
-    "tver_res": 0.0
+    "tver": 15.84,
+    "msk_res": 53.28,
+    "tver_res": 37.44
    },
    "photos": [
     "01",
@@ -331,7 +331,7 @@
    "is_new": false,
    "stock": {
     "msk": 99.36,
-    "tver": 1132.56,
+    "tver": 1125.36,
     "msk_res": 72.0,
     "tver_res": 0.0
    },
@@ -356,7 +356,7 @@
    "is_new": false,
    "stock": {
     "msk": 270.0,
-    "tver": 720.72,
+    "tver": 660.24,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -380,7 +380,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 126.0,
+    "msk": 123.12,
     "tver": 76.32,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -478,7 +478,7 @@
    "is_new": false,
    "stock": {
     "msk": 231.12,
-    "tver": 558.36,
+    "tver": 542.16,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -592,7 +592,7 @@
    "stock": {
     "msk": 6.84,
     "tver": 0.0,
-    "msk_res": 14.4,
+    "msk_res": 3.6,
     "tver_res": 0.0
    },
    "photos": [
@@ -612,10 +612,10 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 205.56,
-    "tver": 969.48,
-    "msk_res": 3.6,
-    "tver_res": 860.4
+    "msk": 137.16,
+    "tver": 940.68,
+    "msk_res": 50.4,
+    "tver_res": 46.8
    },
    "photos": [
     "01",
@@ -680,9 +680,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 139.68,
+    "msk": 127.08,
     "tver": 1233.0,
-    "msk_res": 10.8,
+    "msk_res": 12.6,
     "tver_res": 0.0
    },
    "photos": [
@@ -706,8 +706,8 @@
    "is_new": false,
    "stock": {
     "msk": 165.24,
-    "tver": 1652.04,
-    "msk_res": 73.8,
+    "tver": 1628.64,
+    "msk_res": 34.2,
     "tver_res": 0.0
    },
    "photos": [
@@ -728,7 +728,7 @@
    "stock": {
     "msk": 186.84,
     "tver": 336.96,
-    "msk_res": 3.6,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -748,7 +748,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 250.2,
+    "msk": 246.6,
     "tver": 375.12,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -773,9 +773,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 126.36,
+    "msk": 122.76,
     "tver": 1095.12,
-    "msk_res": 36.0,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -792,7 +792,7 @@
    "is_new": false,
    "stock": {
     "msk": 198.36,
-    "tver": 443.88,
+    "tver": 413.28,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -872,7 +872,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 195.48,
+    "msk": 191.88,
     "tver": 358.2,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -945,7 +945,7 @@
    "stock": {
     "msk": 32.76,
     "tver": 0.0,
-    "msk_res": 100.8,
+    "msk_res": 55.8,
     "tver_res": 0.0
    },
    "photos": [
@@ -966,7 +966,7 @@
    "stock": {
     "msk": 169.92,
     "tver": 438.12,
-    "msk_res": 14.4,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -1014,9 +1014,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 50.04,
+    "msk": 42.84,
     "tver": 0.0,
-    "msk_res": 0.0,
+    "msk_res": 7.2,
     "tver_res": 0.0
    },
    "photos": [
@@ -1063,10 +1063,10 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 121.68,
-    "tver": 116.28,
+    "msk": 83.88,
+    "tver": 154.08,
     "msk_res": 0.0,
-    "tver_res": 225.0
+    "tver_res": 0.0
    },
    "photos": [
     "01",
@@ -1202,22 +1202,6 @@
    "photos": []
   },
   {
-   "art": "VHP612398",
-   "name": "Галина Грей",
-   "format": "60×120",
-   "surface": "Глянец",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0.0,
-    "tver": 0.0,
-    "msk_res": 0.0,
-    "tver_res": 0.0
-   },
-   "photos": []
-  },
-  {
    "art": "VHF612114",
    "name": "Галина Грей Мат",
    "format": "60×120",
@@ -1226,9 +1210,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": true,
    "stock": {
-    "msk": 138.6,
+    "msk": 106.92,
     "tver": 293.76,
-    "msk_res": 0.0,
+    "msk_res": 31.68,
     "tver_res": 0.0
    },
    "photos": []
@@ -1243,7 +1227,7 @@
    "is_new": false,
    "stock": {
     "msk": 234.0,
-    "tver": 476.64,
+    "tver": 450.72,
     "msk_res": 93.6,
     "tver_res": 0.0
    },
@@ -1291,7 +1275,7 @@
    "is_new": false,
    "stock": {
     "msk": 180.0,
-    "tver": 381.6,
+    "tver": 375.84,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1307,7 +1291,7 @@
    "is_new": false,
    "stock": {
     "msk": 218.88,
-    "tver": 823.68,
+    "tver": 818.28,
     "msk_res": 27.0,
     "tver_res": 0.0
    },
@@ -1354,7 +1338,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": true,
    "stock": {
-    "msk": 204.84,
+    "msk": 181.44,
     "tver": 532.8,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1387,7 +1371,7 @@
    "is_new": false,
    "stock": {
     "msk": 112.68,
-    "tver": 251.64,
+    "tver": 251.28,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
