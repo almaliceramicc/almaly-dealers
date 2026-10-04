@@ -9,8 +9,8 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 74.16,
-    "tver": 1001.52,
+    "msk": 216.72,
+    "tver": 857.52,
     "msk_res": 56.16,
     "tver_res": 0.0
    },
@@ -82,9 +82,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 0.0,
+    "msk": 1.44,
     "tver": 0.0,
-    "msk_res": 221.76,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -107,9 +107,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 35.28,
+    "msk": 0.0,
     "tver": 0.0,
-    "msk_res": 0.0,
+    "msk_res": 35.28,
     "tver_res": 0.0
    },
    "photos": [
@@ -132,8 +132,8 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 66.24,
-    "tver": 1267.2,
+    "msk": 210.24,
+    "tver": 1123.2,
     "msk_res": 18.72,
     "tver_res": 0.0
    },
@@ -157,7 +157,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 133.92,
+    "msk": 131.04,
     "tver": 1021.68,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -182,7 +182,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 190.08,
+    "msk": 174.24,
     "tver": 360.0,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -258,8 +258,8 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 98.64,
-    "tver": 203.04,
+    "msk": 166.32,
+    "tver": 131.04,
     "msk_res": 14.4,
     "tver_res": 0.0
    },
@@ -283,7 +283,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 159.84,
+    "msk": 127.84,
     "tver": 10.08,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -330,9 +330,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 139.68,
+    "msk": 136.8,
     "tver": 1053.36,
-    "msk_res": 79.2,
+    "msk_res": 82.08,
     "tver_res": 0.0
    },
    "photos": [
@@ -380,9 +380,9 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 0.0,
+    "msk": 42.52,
     "tver": 0.0,
-    "msk_res": 137.52,
+    "msk_res": 0.0,
     "tver_res": 0.0
    },
    "photos": [
@@ -427,8 +427,8 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 85.68,
-    "tver": 1002.12,
+    "msk": 229.68,
+    "tver": 858.12,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -478,9 +478,9 @@
    "is_new": false,
    "stock": {
     "msk": 221.04,
-    "tver": 542.16,
+    "tver": 448.56,
     "msk_res": 0.0,
-    "tver_res": 0.0
+    "tver_res": 93.6
    },
    "photos": [
     "01",
@@ -499,9 +499,9 @@
    "is_new": false,
    "stock": {
     "msk": 165.24,
-    "tver": 1440.0,
-    "msk_res": 36.0,
-    "tver_res": 0.0
+    "tver": 1346.4,
+    "msk_res": 0.0,
+    "tver_res": 93.6
    },
    "photos": [
     "01",
@@ -545,9 +545,9 @@
    "is_new": false,
    "stock": {
     "msk": 191.52,
-    "tver": 545.76,
+    "tver": 405.36,
     "msk_res": 0.0,
-    "tver_res": 0.0
+    "tver_res": 140.4
    },
    "photos": [
     "01",
@@ -638,9 +638,9 @@
    "is_new": false,
    "stock": {
     "msk": 144.36,
-    "tver": 343.08,
+    "tver": 393.48,
     "msk_res": 0.0,
-    "tver_res": 50.4
+    "tver_res": 0.0
    },
    "photos": [
     "01"
@@ -897,8 +897,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 79.2,
-    "tver": 469.8,
+    "msk": 172.8,
+    "tver": 376.2,
     "msk_res": 32.4,
     "tver_res": 0.0
    },
@@ -943,8 +943,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 30.96,
-    "tver": 390.6,
+    "msk": 171.36,
+    "tver": 250.2,
     "msk_res": 217.8,
     "tver_res": 0.0
    },
@@ -991,10 +991,10 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 109.8,
-    "tver": 876.6,
+    "msk": 203.4,
+    "tver": 689.4,
     "msk_res": 30.6,
-    "tver_res": 0.0
+    "tver_res": 93.6
    },
    "photos": [
     "01",
@@ -1014,10 +1014,10 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 98.28,
-    "tver": 882.0,
+    "msk": 229.68,
+    "tver": 648.0,
     "msk_res": 5.4,
-    "tver_res": 0.0
+    "tver_res": 93.6
    },
    "photos": [
     "01",
@@ -1063,9 +1063,9 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 149.04,
+    "msk": 129.24,
     "tver": 55.08,
-    "msk_res": 0.0,
+    "msk_res": 19.8,
     "tver_res": 0.0
    },
    "photos": [
@@ -1082,8 +1082,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 0.0,
-    "tver": 901.8,
+    "msk": 187.2,
+    "tver": 714.6,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1168,10 +1168,10 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 97.56,
-    "tver": 546.48,
+    "msk": 144.36,
+    "tver": 406.08,
     "msk_res": 21.6,
-    "tver_res": 0.0
+    "tver_res": 93.6
    },
    "photos": [
     "01",
@@ -1194,8 +1194,8 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 64.8,
-    "tver": 563.04,
+    "msk": 138.24,
+    "tver": 419.04,
     "msk_res": 59.04,
     "tver_res": 0.0
    },
@@ -1226,7 +1226,7 @@
    "pallet": "1пал-72м2-50уп-1350кг",
    "is_new": false,
    "stock": {
-    "msk": 221.04,
+    "msk": 213.84,
     "tver": 450.72,
     "msk_res": 0.0,
     "tver_res": 0.0
@@ -1322,8 +1322,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": true,
    "stock": {
-    "msk": 0.0,
-    "tver": 786.6,
+    "msk": 120.6,
+    "tver": 646.2,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1339,9 +1339,9 @@
    "is_new": true,
    "stock": {
     "msk": 176.76,
-    "tver": 532.8,
+    "tver": 392.4,
     "msk_res": 0.0,
-    "tver_res": 0.0
+    "tver_res": 140.4
    },
    "photos": []
   },
@@ -1370,7 +1370,7 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 77.76,
+    "msk": 72.36,
     "tver": 157.68,
     "msk_res": 18.0,
     "tver_res": 0.0
@@ -1386,8 +1386,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": true,
    "stock": {
-    "msk": 0.0,
-    "tver": 783.0,
+    "msk": 102.6,
+    "tver": 642.6,
     "msk_res": 37.8,
     "tver_res": 0.0
    },
@@ -1402,8 +1402,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 128.88,
-    "tver": 628.56,
+    "msk": 222.48,
+    "tver": 534.96,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1418,8 +1418,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": false,
    "stock": {
-    "msk": 58.32,
-    "tver": 185.4,
+    "msk": 151.92,
+    "tver": 91.8,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
@@ -1434,8 +1434,8 @@
    "pallet": "1пал-46,8м2-26 уп-884кг",
    "is_new": true,
    "stock": {
-    "msk": 0.0,
-    "tver": 808.2,
+    "msk": 140.4,
+    "tver": 667.8,
     "msk_res": 0.0,
     "tver_res": 0.0
    },
