@@ -1,6 +1,8 @@
 name: Обновление каталога
 
 on:
+  push:
+    paths: ["arts.txt", "sync_catalog.py"]
   schedule:
     - cron: "30 4 * * *"      # ночью тянем свежие остатки из Google-таблицы
   workflow_dispatch:

@@ -932,3 +932,9 @@ body.has-cart #toast{bottom:88px}
   .wrap{padding:0;max-width:none}
   @page{size:A4;margin:14mm}
 }
+
+/* панель состава каталога в редакторе */
+.arts-add{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);
+  margin-top:10px;padding-top:10px}
+.arts-add input{width:100%;min-width:0;background:var(--panel-2,var(--panel));
+  border:1px solid var(--line);color:var(--tx);padding:9px 11px;border-radius:10px;font:13px var(--sans)}

@@ -46,6 +46,53 @@ async function commit2(message, ops) {
   }
 }
 
+/* ---------- состав каталога (arts.txt) ---------- */
+let edArts = [];              // arts.txt построчно, как лежит в репозитории
+
+async function edLoadArts() {
+  const r = await fetch(`https://raw.githubusercontent.com/${REPO}/main/arts.txt?t=` + Date.now(),
+                        {cache: 'no-store'});
+  edArts = (await r.text()).replace(/\n$/, '').split('\n');
+}
+
+/** Пишет новый arts.txt; состав каталога пересобирает GitHub Action портала. */
+async function edSaveArts(message) {
+  const blob = await gh2('/git/blobs', {method: 'POST',
+    body: JSON.stringify({content: edArts.join('\n') + '\n', encoding: 'utf-8'})});
+  await commit2(message, [{path: 'arts.txt', sha: blob.sha}]);
+}
+
+const edArtIndex = art => edArts.findIndex(l => l.trim().toUpperCase() === art.toUpperCase());
+
+async function edAddArt() {
+  const art = $('#ed-new-art').value.trim().toUpperCase();
+  if (!art) return;
+  if (!/^[A-ZА-Я0-9-]{4,20}$/.test(art)) return toast('Это не похоже на артикул', 'err');
+  if (edArtIndex(art) >= 0) return toast('Этот артикул уже в каталоге', 'err');
+  try {
+    edArts.push(art);
+    await edSaveArts(`Каталог: добавлен ${art}`);
+    $('#ed-new-art').value = '';
+    toast('Добавлено. Карточка появится через 1–2 минуты, если артикул есть в таблице.');
+  } catch (e) { edArts.pop(); toast('Не получилось: ' + e.message, 'err'); }
+}
+
+async function edDropArt() {
+  const t = edTiles.find(x => x.art === ED.current);
+  if (!t) return;
+  if (!confirm(`Убрать «${t.name}» из каталога портала?`)) return;
+  const i = edArtIndex(t.art);
+  if (i < 0) return toast('Этого артикула нет в arts.txt', 'err');
+  const [line] = edArts.splice(i, 1);
+  try {
+    await edSaveArts(`Каталог: убран ${t.art}`);
+    edTiles = edTiles.filter(x => x.art !== t.art);
+    ED.current = null;
+    edDrawList(); edDrawWork();
+    toast('Убрано. Каталог обновится через 1–2 минуты.');
+  } catch (e) { edArts.splice(i, 0, line); toast('Не получилось: ' + e.message, 'err'); }
+}
+
 async function edLoadFiles() {
   const tree = await gh2('/git/trees/main?recursive=1');
   const byArt = {};
@@ -141,6 +188,7 @@ function edDrawWork() {
       </div>
       <div class="right">
         <a class="btn sm" href="tile.html?a=${t.art}" target="_blank" rel="noopener">Открыть в каталоге ↗</a>
+        <button class="btn sm" id="ed-drop-art" type="button">Убрать из каталога</button>
       </div>
     </div>
 
@@ -242,6 +290,7 @@ async function edStart() {
     edData = await fetch('data.json', {cache: 'no-cache'}).then(r => r.json());
     edTiles = edData.tiles;
     await edLoadFiles();
+    await edLoadArts();
     localStorage.setItem('almaly_ed_token', ED.token);
     $('#ed-gate').hidden = true; $('#ed-app').hidden = false;
     edDrawList(); edDrawWork();
@@ -269,13 +318,16 @@ function initEditor() {
   });
   $('#ed-token').addEventListener('keydown', e => e.key === 'Enter' && $('#ed-login').click());
   $('#ed-q').addEventListener('input', edDrawList);
+  $('#ed-add-art').addEventListener('click', edAddArt);
+  $('#ed-new-art').addEventListener('keydown', e => e.key === 'Enter' && edAddArt());
   $('#ed-list').addEventListener('click', e => {
     const b = e.target.closest('.item'); if (b) edSelect(b.dataset.art);
   });
 
   $('#ed-work').addEventListener('click', e => {
-    const b = e.target.closest('button[data-eact], #ed-save, #ed-reset'); if (!b) return;
+    const b = e.target.closest('button[data-eact], #ed-save, #ed-reset, #ed-drop-art'); if (!b) return;
     if (b.id === 'ed-save') return edSave();
+    if (b.id === 'ed-drop-art') return edDropArt();
     if (b.id === 'ed-reset') { ED.draft = (ED.files[ED.current] || []).map(p => ({...p, id: p.f})); return edDrawWork(); }
     const i = +b.dataset.i, p = ED.draft[i];
     if (b.dataset.eact === 'del') p.deleted = true;
