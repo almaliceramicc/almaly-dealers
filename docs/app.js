@@ -11,7 +11,7 @@ const num = v => Math.max(0.1, +String(v).replace(',', '.') || 0.1);
 
 /** Из строки упаковки «1 уп-2шт-1,44м2-27 кг» достаём м² и вес одной упаковки. */
 function packInfo(t) {
-  const p = (t.packing || '').replace(',', '.');
+  const p = (t.packing || '').replace(/,/g, '.');
   const sqm = +(p.match(/([\d.]+)\s*м2/i)?.[1]) || (String(t.format).includes('120') ? 1.44 : 1.8);
   const kg = +(p.match(/([\d.]+)\s*кг/i)?.[1]) || 0;
   return {sqm, kg};
@@ -287,7 +287,9 @@ async function renderCatalog() {
   draw();
 
   $('#s-models').textContent = tiles.length;
-  $('#s-new').textContent = tiles.filter(t => t.is_new).length;
+  const fresh = tiles.filter(t => t.is_new).length;
+  $('#s-new').textContent = fresh;
+  $('#s-new').parentElement.hidden = !fresh;          // «0 новинок» на первом экране не показываем
   $('#s-stock').textContent = nf(tiles.reduce((a, t) => a + t.stock.msk + t.stock.tver, 0), 0);
   $('#stat').textContent = `${tiles.length} моделей · обновление остатков ежедневно`;
 }
