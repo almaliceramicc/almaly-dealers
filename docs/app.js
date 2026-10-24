@@ -113,7 +113,7 @@ function addToCart(t, need, wh) {
   const same = cart.find(i => i.art === t.art && i.wh === wh);
   if (same) { same.packs += packs; same.need = +(same.need + need).toFixed(2); }
   else cart.push({art: t.art, name: t.name, format: t.format, surface: t.surface,
-                  photo: t.photos.length ? img(t, coverIdx(t), true) : '',
+                  photo: t.photos.length ? img(t, 0, true) : '',
                   sqm, kg, need: +need.toFixed(2), packs, wh});
   setCart(cart, true);
   toast(`${t.name}: ${packs} уп. (${nf(packs * sqm)} м²) — в заявке`, 'ok');
@@ -190,9 +190,10 @@ async function renderCatalog() {
       <div class="ph">
         ${t.is_new ? '<span class="badge-new">Новинка</span>' : ''}
         ${t.photos.length
-          ? `<img src="${img(t, coverIdx(t), true)}" alt="Керамогранит ${esc(t.name)}, ${t.format} см, в интерьере" loading="lazy"
+          ? `<img src="${img(t, 0, true)}" alt="Керамогранит ${esc(t.name)}, ${t.format} см" loading="lazy"
                decoding="async" width="700" height="875" onload="this.classList.add('in')"
-               onerror="this.classList.add('in')">`
+               onerror="this.classList.add('in')">${coverIdx(t) > 0 ? `<img class="alt" src="${img(t, coverIdx(t), true)}" alt=""
+               aria-hidden="true" loading="lazy" decoding="async" width="700" height="875">` : ''}`
           : NO_PHOTO}
       </div>
       <div class="b">
