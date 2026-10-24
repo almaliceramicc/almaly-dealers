@@ -1,33 +1,33 @@
 /* ============================================================================
    Дилерский портал «Алмалы-Керамик» — дизайн-система.
-   Italian contemporary: тёплая бумага, известняк, графит, благородный зелёный,
-   шампань как редкий акцент. Один файл на все страницы, одна пара шрифтов.
+   Редизайн 25.10.2026 по общему макету с витриной: тёплый белый, графит, антиква, острые углы;
+   красный из логотипа — редкий акцент. Старый вид — git-метка design-old-2026-10-25. Один файл на все страницы, одна пара шрифтов.
    Шрифты подключаются в HTML (Cormorant Garamond + Inter) — здесь @import нет.
    ========================================================================== */
 
 :root{
   /* — поверхности — */
-  --paper:#f8f6f2;          /* тёплый молочно-белый фон */
-  --stone:#efece6;          /* известняк */
-  --card:#fffdfa;           /* кремовая карточка */
-  --card-2:#f3f1ec;         /* вложенная плашка */
+  --paper:#F5F1EA;          /* тёплый молочно-белый фон */
+  --stone:#EFE9DF;          /* известняк */
+  --card:#FBF8F3;           /* кремовая карточка */
+  --card-2:#EFE9DF;         /* вложенная плашка */
 
   /* — текст — */
-  --ink:#17191b;            /* глубокий графит из логотипа */
-  --ink-2:#43474a;
-  --muted:#6b7073;          /* контраст к --paper ≥ 4.5:1 */
+  --ink:#1C1D1F;            /* глубокий графит из логотипа */
+  --ink-2:#3F3D39;
+  --muted:#5E5A53;          /* контраст к --paper ≥ 4.5:1 */
 
   /* — линии — */
-  --line:#e4e0d8;
-  --line-2:#cfcabf;
+  --line:#DDD5C9;
+  --line-2:#C9C0B3;
 
   /* — основной интерфейсный цвет: графит — */
-  --brand:#17191b;
+  --brand:#1C1D1F;
   --brand-deep:#0d0f10;
   --on-brand:#ffffff;       /* текст на фирменной «краске» */
   --ink-surface:#0f1112;    /* всегда тёмная поверхность: герой, итог заявки */
-  --brand-soft:#eeebe5;
-  --brand-line:#cfcabf;
+  --brand-soft:#ECE6DB;
+  --brand-line:#C9C0B3;
 
   /* — фирменный красный из логотипа, только акцент — */
   --accent:#d8202a;
@@ -56,10 +56,10 @@
   --tap:44px;               /* минимальная высота кликаемого элемента */
 
   /* — радиусы и тени — */
-  --r-s:10px; --r:14px; --r-l:20px; --r-full:999px;
+  --r-s:4px; --r:4px; --r-l:6px; --r-full:999px;
   --sh-1:0 1px 2px rgba(23,26,25,.05);
   --sh-2:0 1px 2px rgba(23,26,25,.05), 0 14px 30px -20px rgba(23,26,25,.4);
-  --sh-3:0 2px 6px rgba(23,26,25,.06), 0 30px 50px -26px rgba(13,15,16,.42);
+  --sh-3:0 2px 6px rgba(23,26,25,.05), 0 24px 40px -28px rgba(13,15,16,.32);
 
   /* — уровни интерфейса — */
   --z-head:30; --z-tools:20; --z-bar:40; --z-sheet:55; --z-toast:70; --z-modal:60;
@@ -938,3 +938,34 @@ body.has-cart #toast{bottom:88px}
   margin-top:10px;padding-top:10px}
 .arts-add input{width:100%;min-width:0;background:var(--panel-2,var(--panel));
   border:1px solid var(--line);color:var(--tx);padding:9px 11px;border-radius:10px;font:13px var(--sans)}
+
+/* ===================== редизайн 25.10.2026: журнальный первый экран ======================
+   Текст на светлом фоне, рядом интерьерное фото — как на витрине. Старый тёмный герой: метка design-old-2026-10-25. */
+.hero{background:var(--paper);color:var(--ink);overflow:visible;border-bottom:1px solid var(--line)}
+.hero::before,.hero::after,.hero-in::before{content:none;display:none}
+.hero-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:var(--s9);align-items:center;
+  padding:var(--s10) var(--s6) var(--s9)}
+.hero-text{display:flex;flex-direction:column;min-width:0}
+.hero .eyebrow{color:var(--muted);text-shadow:none}
+.hero h1{color:var(--ink);text-shadow:none;font-weight:500;max-width:16ch}
+.hero .sub-text{color:var(--muted);text-shadow:none}
+.hero-cta .btn.primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.hero-cta .btn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);color:var(--paper)}
+.hero-cta .btn.on-dark{border-color:var(--ink);color:var(--ink)}
+.hero-cta .btn.on-dark:hover:not(:disabled){background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.hero-stats{border-top:1px solid var(--line);gap:var(--s7)}
+.hero-stats b{color:var(--ink);text-shadow:none;font-weight:500}
+.hero-stats span{color:var(--muted);text-shadow:none}
+.hero-fig{margin:0;position:relative;min-width:0}
+.hero-fig img{display:block;width:100%;aspect-ratio:4/5;max-height:calc(100vh - 150px);min-height:380px;object-fit:cover;
+  border-radius:var(--r);background:var(--card-2)}
+.hero-fig figcaption{position:absolute;left:20px;bottom:20px;background:var(--paper);padding:12px 16px;border-radius:var(--r);
+  display:flex;flex-direction:column;gap:2px}
+.hero-fig figcaption b{font-family:var(--display);font-weight:500;font-size:22px}
+.hero-fig figcaption span{font-size:12px;color:var(--muted)}
+.trust{background:var(--card)}
+@media(max-width:760px){
+  .hero-in{padding:var(--s4) var(--s4) var(--s8);gap:var(--s6)}
+  .hero-fig{order:-1}
+  .hero-fig img{min-height:0;max-height:none}
+}

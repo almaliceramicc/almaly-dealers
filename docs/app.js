@@ -7,6 +7,13 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;
 const nf = (v, d = 2) => Number(v).toLocaleString('ru-RU', {maximumFractionDigits: d});
 const m2 = v => v > 0 ? nf(v) + ' м²' : '—';
 const img = (t, i, thumb) => `img/${t.art}/${t.photos[i]}${thumb ? '_t' : ''}.jpg`;
+/* Обложка карточки — интерьерный кадр (редизайн 25.10.2026, тот же список, что на витрине):
+   по схеме владельца интерьер пятый, у остальных номер задан вручную (1 = первый кадр).
+   ponytail: ручной список, при новых фото проверять. */
+const COVER = {VHP612098: 8, VHP612391: 6, VHP612390: 6, VHP612392: 7, VHP612826: 8, VHP612800: 8, VHP612039: 4,
+  VHP612887: 8, VHP612042: 5, VHP600806: 7, VHP600157: 1, VHP600003: 1, VHP600865: 5, VHF600818: 5, VHF600188: 5,
+  VHP600813: 6, VHP600826: 7, VHF600822: 8, VHF600007: 8, VHF600080: 8, VHF600229: 7, VHF600227: 7, VHP600853: 6};
+const coverIdx = t => Math.min(COVER[t.art] ? COVER[t.art] - 1 : (t.photos.length >= 6 ? 4 : 0), t.photos.length - 1);
 const num = v => Math.max(0.1, +String(v).replace(',', '.') || 0.1);
 
 /** Из строки упаковки «1 уп-2шт-1,44м2-27 кг» достаём м² и вес одной упаковки. */
@@ -106,7 +113,7 @@ function addToCart(t, need, wh) {
   const same = cart.find(i => i.art === t.art && i.wh === wh);
   if (same) { same.packs += packs; same.need = +(same.need + need).toFixed(2); }
   else cart.push({art: t.art, name: t.name, format: t.format, surface: t.surface,
-                  photo: t.photos.length ? img(t, 0, true) : '',
+                  photo: t.photos.length ? img(t, coverIdx(t), true) : '',
                   sqm, kg, need: +need.toFixed(2), packs, wh});
   setCart(cart, true);
   toast(`${t.name}: ${packs} уп. (${nf(packs * sqm)} м²) — в заявке`, 'ok');
@@ -183,7 +190,7 @@ async function renderCatalog() {
       <div class="ph">
         ${t.is_new ? '<span class="badge-new">Новинка</span>' : ''}
         ${t.photos.length
-          ? `<img src="${img(t, 0, true)}" alt="Керамогранит ${esc(t.name)}, ${t.format} см" loading="lazy"
+          ? `<img src="${img(t, coverIdx(t), true)}" alt="Керамогранит ${esc(t.name)}, ${t.format} см, в интерьере" loading="lazy"
                decoding="async" width="700" height="875" onload="this.classList.add('in')"
                onerror="this.classList.add('in')">`
           : NO_PHOTO}
