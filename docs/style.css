@@ -870,13 +870,19 @@ body.has-cart #toast{bottom:88px}
   .hero-stats{gap:var(--s6);margin-top:var(--s6);padding-top:var(--s5)}
   .hero-cta .btn{flex:1 1 100%}
   .trust-in{padding:var(--s5) var(--s4);gap:var(--s4)}
-  .head{padding:9px 0;min-height:56px}
+  .head{padding:6px 16px;min-height:56px;gap:8px}
+  .head .right{gap:0;min-width:0}
   .logo{font-size:19px}
-  .navlink{padding:8px 11px;font-size:var(--t-s)}
+  .navlink{padding:8px;font-size:var(--t-s);min-height:44px}
+  .navlink.cart{gap:4px}
+  .navlink.cart b{padding:1px 6px}
+  .btn.sm,.icon-btn{min-height:44px;min-width:44px}
+  input,select,textarea{font-size:16px!important}
   .navlink.hide-sm{display:none}
   /* поиск виден всегда, остальные фильтры — в нижней панели */
   .tools .desk-filter{display:none}
   .filters-btn{display:inline-flex;flex:none}
+  .tools .search{flex:1;min-width:0}
   .tools .count{width:100%;margin:0;order:9}
   .grid{grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:var(--s3);padding:var(--s4) 0 var(--s9)}
   .card h3{font-size:var(--t-md)}
@@ -919,6 +925,10 @@ body.has-cart #toast{bottom:88px}
 @media(max-width:380px){
   .grid{grid-template-columns:1fr}
   .hero-stats{gap:var(--s5)}
+  .head .logo{gap:6px}
+  .head .logo .mark{width:22px;height:22px}
+  .head .logo .word{font-size:13px}
+  .head .navlink{padding:6px;font-size:11px}
 }
 
 /* ============================ печать ==================================== */
@@ -957,7 +967,7 @@ body.has-cart #toast{bottom:88px}
 .hero-stats b{color:var(--ink);text-shadow:none;font-weight:500}
 .hero-stats span{color:var(--muted);text-shadow:none}
 .hero-fig{margin:0;position:relative;min-width:0}
-.hero-fig img{display:block;width:100%;aspect-ratio:4/5;max-height:calc(100vh - 150px);min-height:380px;object-fit:cover;
+.hero-fig img{display:block;width:100%;height:auto;aspect-ratio:4/5;max-height:calc(100vh - 150px);min-height:380px;object-fit:cover;
   border-radius:var(--r);background:var(--card-2)}
 .hero-fig figcaption{position:absolute;left:20px;bottom:20px;background:var(--paper);padding:12px 16px;border-radius:var(--r);
   display:flex;flex-direction:column;gap:2px}
@@ -965,9 +975,16 @@ body.has-cart #toast{bottom:88px}
 .hero-fig figcaption span{font-size:12px;color:var(--muted)}
 .trust{background:var(--card)}
 @media(max-width:760px){
-  .hero-in{padding:var(--s4) var(--s4) var(--s8);gap:var(--s6)}
-  .hero-fig{order:-1}
-  .hero-fig img{min-height:0;max-height:none}
+  .hero-in{padding:var(--s6) var(--s4) var(--s7);gap:var(--s6);grid-template-columns:minmax(0,1fr)}
+  .hero h1{font-size:clamp(32px,8.5vw,44px);max-width:none}
+  .hero-cta{gap:10px}
+  .hero-cta .btn{flex:1 1 140px;padding:12px;font-size:13px}
+  .hero-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px;padding-top:16px}
+  .hero-stats b{font-size:24px}
+  .hero-stats span{font-size:10px;letter-spacing:.06em}
+  .hero-fig img{aspect-ratio:16/9;min-height:0;max-height:240px}
+  .hero-fig figcaption{left:12px;bottom:12px;padding:8px 12px}
+  .hero-fig figcaption b{font-size:20px}
 }
 
 /* Карточка: сама плитка, при наведении проявляется интерьер (25.10.2026). */
