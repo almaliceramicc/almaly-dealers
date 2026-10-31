@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Обновляет карточки каталога дилерского портала из Google-таблицы.
 
-Трогает только товарные поля: название, формат, покрытие, упаковку, паллету и остатки.
-Список фотографий остаётся тем, что задан в редакторе портала.
+Трогает товарные поля: название, формат, покрытие, упаковку, паллету и остатки.
+Список фотографий уже существующей карточки не меняет — его задаёт редактор.
+Если карточка вернулась в каталог и в data.json её ещё нет, кадры читаются с диска
+(docs/img), чтобы повторное добавление не обнуляло галерею.
+На витрину этот скрипт ничего не отправляет: фото и состав карточек уносит
+workflow «Зеркало витрины».
 """
 import csv, io, json, unicodedata, urllib.request
 from pathlib import Path
@@ -78,11 +82,34 @@ def catalog():
     return tiles
 
 
+def disk_photos(art, img_root=None):
+    """Имена полных кадров на диске, без миниатюр. Пусто, если папки нет."""
+    root = Path(img_root) if img_root else Path(__file__).parent / "docs" / "img"
+    if not root.is_dir():
+        return []
+    folder = root / art
+    if not folder.is_dir():
+        want = art.upper().translate(CYR)
+        folder = next((p for p in root.iterdir()
+                       if p.is_dir() and p.name.upper().translate(CYR) == want), None)
+    if not folder or not folder.is_dir():
+        return []
+    frames = [p for p in folder.iterdir()
+              if p.is_file() and p.suffix.lower() == ".jpg" and not p.stem.lower().endswith("_t")]
+    frames.sort(key=lambda p: p.name.lower())
+    return [p.stem for p in frames]
+
+
 def main():
     old = json.loads(DATA.read_text(encoding="utf-8")) if DATA.exists() else {"tiles": []}
-    photos = {t["art"]: t.get("photos", []) for t in old["tiles"]}
+    known = {t["art"]: t.get("photos", []) for t in old["tiles"]}
 
-    tiles = [t | {"photos": photos.get(t["art"], [])} for t in catalog()]
+    def photos_for(art):
+        if art in known:
+            return known[art]
+        return disk_photos(art)
+
+    tiles = [t | {"photos": photos_for(t["art"])} for t in catalog()]
     tiles.sort(key=lambda t: (not t["photos"], t["format"], t["name"]))
 
     # Таблицу правят вручную: переименованная колонка артикулов однажды уже оставила

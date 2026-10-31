@@ -1,5 +1,5 @@
 /* Каталог дилерского портала: карточки, фильтры, страница модели, заявка.
-   Свои данные (data.json), свои фотографии — витрина с QR-кодами не затрагивается. */
+   Фото и состав карточек на витрину QR уносит workflow «Зеркало витрины», не эта страница. */
 const load = fetch('data.json', {cache: 'no-cache'}).then(r => r.json());
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
