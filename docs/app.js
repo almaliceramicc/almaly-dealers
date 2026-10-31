@@ -188,7 +188,6 @@ async function renderCatalog() {
     const {sqm} = packInfo(t), av = availability(t);
     return `<article class="card reveal" style="transition-delay:${Math.min(i, 11) * 30}ms" data-art="${t.art}">
       <div class="ph">
-        ${t.is_new ? '<span class="badge-new">Новинка</span>' : ''}
         ${t.photos.length
           ? `<img src="${img(t, 0, true)}" alt="Керамогранит ${esc(t.name)}, ${t.format} см" loading="lazy"
                decoding="async" width="700" height="875" onload="this.classList.add('in')"
@@ -199,7 +198,7 @@ async function renderCatalog() {
       <div class="b">
         <h3><a class="stretch" href="tile.html?a=${t.art}">${esc(t.name)}</a></h3>
         <div class="row"><span class="avail ${av.cls}">${av.text}</span></div>
-        <div class="meta"><span class="tag">${t.format} см</span><span class="tag">${esc(t.surface)}</span>
+        <div class="meta">${t.is_new ? '<span class="badge-new">Новинка</span>' : ''}<span class="tag">${t.format} см</span><span class="tag">${esc(t.surface)}</span>
           <span class="tag">${nf(sqm)} м² / уп.</span></div>
         <div class="stock">${stockRow('Москва', t.stock.msk)}${stockRow('Тверь', t.stock.tver)}
           ${t.stock.tver > 0 ? `<span class="eta">Тверь · ${TVER_ETA_LOW}</span>` : ''}</div>
