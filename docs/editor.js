@@ -1,5 +1,6 @@
-/* Редактор каталога дилерского портала: фотографии и их порядок.
-   Пишет прямо в репозиторий портала — витрина с QR-кодами не затрагивается. */
+/* Редактор каталога дилерского портала: фотографии, их порядок и состав карточек.
+   Пишет в репозиторий портала. Workflow «Зеркало витрины» сам переносит фото
+   и список карточек на витрину QR (almaly-tiles). Обратно витрина ничего не шлёт. */
 const ED = {
   token: localStorage.getItem('almaly_ed_token') || '',
   files: {},      // {арт: [{f, sha}]} — что сейчас лежит в репозитории
@@ -80,7 +81,7 @@ async function edAddArt() {
 async function edDropArt() {
   const t = edTiles.find(x => x.art === ED.current);
   if (!t) return;
-  if (!confirm(`Убрать «${t.name}» из каталога портала?`)) return;
+  if (!confirm(`Убрать карточку «${t.name}»?\n\nОна пропадёт и в каталоге портала, и на витрине QR — обычно через несколько минут. Ночное обновление из таблицы её не вернёт.`)) return;
   const i = edArtIndex(t.art);
   if (i < 0) return toast('Этого артикула нет в arts.txt', 'err');
   const [line] = edArts.splice(i, 1);
@@ -89,7 +90,7 @@ async function edDropArt() {
     edTiles = edTiles.filter(x => x.art !== t.art);
     ED.current = null;
     edDrawList(); edDrawWork();
-    toast('Убрано. Каталог обновится через 1–2 минуты.');
+    toast('Карточка убрана. Портал и витрина обновятся через несколько минут.');
   } catch (e) { edArts.splice(i, 0, line); toast('Не получилось: ' + e.message, 'err'); }
 }
 
@@ -188,7 +189,7 @@ function edDrawWork() {
       </div>
       <div class="right">
         <a class="btn sm" href="tile.html?a=${t.art}" target="_blank" rel="noopener">Открыть в каталоге ↗</a>
-        <button class="btn sm" id="ed-drop-art" type="button">Убрать из каталога</button>
+        <button class="btn sm" id="ed-drop-art" type="button">Убрать карточку</button>
       </div>
     </div>
 
@@ -197,8 +198,9 @@ function edDrawWork() {
                  : '<span class="cp-none">обложки пока нет</span>'}
       <div>
         <b>Обложка карточки</b>
-        <p>Первое фото в списке — то, что дилер видит в каталоге. Перетащите фото мышью или пальцем,
-          чтобы изменить порядок, либо нажмите ★ на нужном.</p>
+        <p>Первое фото в списке — обложка. Перетащите фото мышью или пальцем,
+          чтобы изменить порядок, либо нажмите ★ на нужном. Тот же порядок уходит на витрину QR:
+          первое фото становится обложкой и там.</p>
         <p>Загружено фотографий: <b>${kept.length}</b>. Рекомендуем JPG, вертикальные,
           не меньше 1000 px по длинной стороне — портал сам уменьшит их до 1600 px и сделает миниатюру.</p>
       </div>
@@ -272,7 +274,7 @@ async function edSave() {
     await edLoadFiles();
     ED.draft = (ED.files[art] || []).map(p => ({...p, id: p.f}));
     edDrawList(); edDrawWork();
-    toast('Опубликовано. Каталог обновится через 1–2 минуты.', 'ok');
+    toast('Опубликовано. Портал обновится через 1–2 минуты, витрина QR — следом.', 'ok');
   } catch (e) {
     toast('Не сохранилось: ' + e.message + '. Изменения остались в редакторе — попробуйте ещё раз.', 'err');
     edDrawWork();
