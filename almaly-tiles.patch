@@ -1,0 +1,205 @@
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index 589365c..87d244b 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -1,5 +1,10 @@
+ name: Пересборка каталога
+ 
++# Ночной запуск тянет Google-таблицу и собирает сайт.
++# arts.txt и photos/ он не переписывает: их присылает дилерский портал
++# (workflow «Зеркало витрины» в almaly-dealers). Коммит ниже с [skip ci]
++# не запускает сборку повторно и ничего не отправляет обратно на портал.
++
+ on:
+   push:
+     paths: ["photos/**", "arts.txt", "build.py", "config.json"]
+diff --git a/README.md b/README.md
+index 8ab84a1..b164826 100644
+--- a/README.md
++++ b/README.md
+@@ -1,7 +1,26 @@
+ # Каталог плитки «Алмалы-Керамик» + QR-коды
+ 
+-Статический сайт-каталог по рабочим артикулам из Google-таблицы. У каждой модели
+-своя страница с галереей и свой QR-код с названием и артикулом в центре.
++Публичная витрина: у каждой модели своя страница с галереей и свой QR-код.
++
++Фотографии и состав карточек задаются на дилерском портале
++([almaly-dealers](https://github.com/almaliceramicc/almaly-dealers)) и сами приходят сюда.
++Обратно эта витрина ничего не отправляет.
++
++- Владелец поменял фото на портале (загрузка, удаление, порядок, обложка) —
++  workflow «Зеркало витрины» записывает `photos/<АРТИКУЛ>/` в том же порядке.
++  Первое фото становится обложкой. Этот push запускает пересборку сайта и QR-кодов,
++  обычно за несколько минут.
++- Владелец нажал на портале «Убрать карточку» — артикул пропадает из `arts.txt`
++  и здесь. Папка `photos/<АРТИКУЛ>/` этой модели очищается.
++- Ночной workflow «Пересборка каталога» по-прежнему скачивает Google-таблицу
++  (`sync_sheet.py`) и собирает сайт (`build.py`). Список `arts.txt` и присланные
++  фото он не переписывает, поэтому удалённая карточка и новые снимки после ночи
++  остаются как на портале.
++- Обновление только остатков на портале витрину не запускает.
++
++Редактор на этой витрине (страница ниже и `./edit.sh`) по-прежнему открывается.
++Для обычной работы он не нужен: следующая правка той же модели на портале
++заменит фото, а следующее изменение списка карточек заново запишет `arts.txt`.
+ 
+ ## Редактор медиа онлайн (с любого устройства)
+ 
+@@ -12,7 +31,8 @@ https://almaliceramicc.github.io/almaly-tiles/admin.html — вход по GitHu
+ автоматически ужимаются до 1600 px.
+ 
+ Каталог сам обновляется из Google-таблицы каждую ночь (workflow «Пересборка каталога»,
+-он же запускается кнопкой Run workflow вручную).
++он же запускается кнопкой Run workflow вручную). Ночь обновляет цены наличия из таблицы,
++но не возвращает карточки, которые убрали на портале.
+ 
+ ## Редактор медиа на Mac
+ 
+@@ -24,6 +44,8 @@ https://almaliceramicc.github.io/almaly-tiles/admin.html — вход по GitHu
+ 
+ ## Как добавить фото вручную
+ 
++Обычный путь — редактор на дилерском портале. Запасной, если портал недоступен:
++
+ 1. Положить файлы в `photos/<АРТИКУЛ>/` (папки уже созданы для всех рабочих артикулов).
+    Порядок — по имени файла: `01.jpg`, `02.jpg`, ... Первое фото становится обложкой.
+ 2. Собрать сайт:
+@@ -34,17 +56,32 @@ https://almaliceramicc.github.io/almaly-tiles/admin.html — вход по GitHu
+ 
+    ./publish.sh
+ 
++Такие файлы живут, пока ту же модель в следующий раз не сохранят на портале:
++зеркало заменит папку снимками портала.
++
+ ## Как обновить список плиток из таблицы
+ 
++Состав карточек (какие артикулы показывать) теперь ведётся на портале, в `arts.txt`.
++Команда ниже только освежает выгрузку таблицы и собирает сайт. Строки, которых
++нет в `arts.txt`, в каталог не попадут.
++
+    python3 sync_sheet.py && python3 build.py
+ 
+ ## Что где
+ 
+-- `data/*.csv` — выгрузка листов таблицы (60×60 и 60×120)
+-- `photos/<АРТИКУЛ>/` — исходные фото (полный размер, в сайт не попадают)
++- `data/*.csv` — выгрузка листов таблицы (60×60 и 60×120), её пишет ночной запуск
++- `arts.txt` — какие артикулы показывать. Копия списка с дилерского портала.
++  Ночная пересборка этот файл не трогает
++- `photos/<АРТИКУЛ>/` — исходные фото. Для моделей, которые правили на портале,
++  здесь те же кадры и в том же порядке (первое — обложка)
+ - `docs/` — готовый сайт: `index.html` (каталог), `tile.html?a=АРТИКУЛ`, `print.html` (лист QR на печать)
+ - `editor.py` + `editor.html` — редактор медиа (`./edit.sh`)
+-- `qr/<АРТИКУЛ>.png` — QR-коды 1000×1000 для печати и наклеек
++- `qr/<АРТИКУЛ>.png` — QR-коды 1000×1000 для печати и наклеек.
++  При сборке коды моделей, которых уже нет в каталоге, удаляются
+ - `config.json` — адрес сайта. QR-коды строятся из него: поменял адрес — перезапусти `build.py`
+ 
+ Остатки складов на сайт намеренно не выводятся.
++
++Секрет для приёма правок с портала хранится не здесь, а в репозитории
++`almaly-dealers` под именем `TILES_TOKEN`. Как его создать — в README портала,
++раздел «Зеркало витрины».
+diff --git a/build.py b/build.py
+index bdb9868..4ac71a2 100755
+--- a/build.py
++++ b/build.py
+@@ -3,8 +3,11 @@
+ 
+ Как добавить фото: положить файлы в photos/<АРТИКУЛ>/ и запустить `python3 build.py`.
+ Порядок фото — по имени файла (01, 02, ...). Первое фото становится обложкой.
++
++Список карточек (arts.txt) и фото присылает дилерский портал. Ночной запуск
++этого скрипта читает arts.txt, но не возвращает в него строки из Google-таблицы.
+ """
+-import csv, hashlib, json, shutil, textwrap, unicodedata
++import csv, hashlib, json, re, shutil, textwrap, unicodedata
+ from pathlib import Path
+ 
+ import qrcode
+@@ -145,6 +148,45 @@ def make_qr(tile):
+     img.resize((1000, 1000), Image.LANCZOS).save(QR / f"{tile['art']}.png", "PNG")
+ 
+ 
++def prune_stale(tiles):
++    """Убирает QR и готовые картинки моделей, которых уже нет в каталоге.
++
++    Карточка, снятая на портале, пропадает из arts.txt. Ночная пересборка
++    собирает сайт заново и здесь стирает её QR и docs/img, чтобы старый файл
++    не оставался в репозитории. Исходники в photos/ не трогает — их снимает
++    зеркало портала в том же коммите, где убирает строку из arts.txt.
++    """
++    keep = {t["art"].upper().translate(CYR) for t in tiles}
++    if len(keep) < 10:
++        print("Снятие старых файлов пропущено: в каталоге меньше 10 моделей.")
++        return
++    def label(path):
++        try:
++            return str(path.relative_to(ROOT))
++        except ValueError:
++            return path.name
++
++    removed = []
++    for folder in (QR, SITE / "qr"):
++        if not folder.is_dir():
++            continue
++        for path in list(folder.glob("*.png")):
++            if path.stem.upper().translate(CYR) not in keep:
++                path.unlink()
++                removed.append(label(path))
++    img = SITE / "img"
++    if img.is_dir():
++        for path in list(img.iterdir()):
++            if not path.is_dir() or path.name.upper().translate(CYR) in keep:
++                continue
++            if not re.fullmatch(r"[0-9A-Za-zА-Яа-яЁё_-]{4,32}", path.name):
++                continue
++            shutil.rmtree(path)
++            removed.append(label(path) + "/")
++    if removed:
++        print("Сняты материалы моделей вне каталога:", ", ".join(removed))
++
++
+ def main():
+     tiles = catalog()
+     # Таблицу правят вручную: переименованная колонка артикулов однажды уже оставила
+@@ -161,6 +203,7 @@ def main():
+         json.dumps({"base": BASE, "tiles": tiles}, ensure_ascii=False, indent=1), encoding="utf-8")
+     shutil.copytree(QR, SITE / "qr", dirs_exist_ok=True)   # QR доступны и с сайта
+ 
++    prune_stale(tiles)
+     with_photo = sum(1 for t in tiles if t["photos"])
+     print(f"Плиток: {len(tiles)} | с фото: {with_photo} | без фото: {len(tiles) - with_photo} "
+           f"| в наличии (Москва): {sum(1 for t in tiles if t['stock']['msk'] > 0)}")
+diff --git a/docs/admin.html b/docs/admin.html
+index 1b1646b..200fe9b 100644
+--- a/docs/admin.html
++++ b/docs/admin.html
+@@ -105,8 +105,12 @@
+ 
+ <section class="gate" id="gate">
+   <h1>Вход в редактор</h1>
+-  <p>Нужен GitHub-токен с правом записи в репозиторий <b>almaly-tiles</b>. Он сохранится в этом браузере
+-     и больше спрашиваться не будет.</p>
++  <p>Фотографии и карточки задаются на дилерском портале — оттуда они сами
++     приходят на эту витрину. Здесь редактор можно не открывать: следующая правка
++     той же модели на портале заменит фото, а изменение списка карточек заново
++     запишет состав каталога.</p>
++  <p>Если всё же правите здесь, нужен GitHub-токен с правом записи в репозиторий
++     <b>almaly-tiles</b>. Он сохранится в этом браузере и больше спрашиваться не будет.</p>
+   <input type="password" id="token" placeholder="ghp_… или github_pat_…" autocomplete="off">
+   <button class="btn primary" id="login">Войти</button>
+   <p class="hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=Almaly%20tiles%20editor"
+diff --git a/editor.html b/editor.html
+index 018c575..15ef784 100644
+--- a/editor.html
++++ b/editor.html
+@@ -43,6 +43,7 @@ main{padding:20px 24px 60px;display:grid;gap:14px}
+ 
+ <header>
+   <h1>Редактор медиа</h1>
++  <span class="dim">Фото и карточки задаются на дилерском портале и сами приходят сюда.</span>
+   <input type="search" id="q" placeholder="Поиск: название или артикул">
+   <select id="only">
+     <option value="">Все модели</option>
