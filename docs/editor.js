@@ -26,20 +26,35 @@ async function gh2(path, opts = {}) {
 
 const sleep2 = ms => new Promise(r => setTimeout(r, ms));
 
-/** Один коммит из набора операций; повтор, если ветку успел сдвинуть кто-то другой. */
-async function commit2(message, ops) {
+/** Текст файла в коммите ref (GitHub отдаёт base64). */
+async function readAt(ref, path) {
+  const f = await gh2(`/contents/${path}?ref=${ref}`);
+  return decodeURIComponent(escape(atob(f.content.replace(/\n/g, ''))));
+}
+
+/** Один коммит из набора операций; повтор, если ветку успел сдвинуть кто-то другой.
+ *  edits — правки текстовых файлов: каждая накладывается на версию из свежего коммита,
+ *  а не на копию в браузере, чтобы не стереть чужие изменения. Возвращает новые тексты. */
+async function commit2(message, ops, edits = []) {
   for (const wait of [0, 900, 2500, 5000]) {
     if (wait) await sleep2(wait);
     try {
       const head = (await gh2('/git/refs/heads/main')).object.sha;
       const baseTree = (await gh2(`/git/commits/${head}`)).tree.sha;
-      const tree = ops.map(o => ({path: o.path, mode: '100644', type: 'blob', sha: o.sha ?? null}));
+      const texts = {}, extra = [];
+      for (const e of edits) {
+        texts[e.path] = e.apply(await readAt(head, e.path));
+        const b = await gh2('/git/blobs', {method: 'POST',
+          body: JSON.stringify({content: texts[e.path], encoding: 'utf-8'})});
+        extra.push({path: e.path, sha: b.sha});
+      }
+      const tree = [...ops, ...extra].map(o => ({path: o.path, mode: '100644', type: 'blob', sha: o.sha ?? null}));
       const t = await gh2('/git/trees', {method: 'POST',
         body: JSON.stringify({base_tree: baseTree, tree})});
       const c = await gh2('/git/commits', {method: 'POST',
         body: JSON.stringify({message, tree: t.sha, parents: [head]})});
       await gh2('/git/refs/heads/main', {method: 'PATCH', body: JSON.stringify({sha: c.sha})});
-      return;
+      return texts;
     } catch (e) {
       const race = [409, 422].includes(e.status) || /fast forward/i.test(e.message);
       if (!race || wait === 5000) throw e;
@@ -57,13 +72,14 @@ async function edLoadArts() {
 }
 
 /** Пишет новый arts.txt; состав каталога пересобирает GitHub Action портала. */
-async function edSaveArts(message) {
-  const blob = await gh2('/git/blobs', {method: 'POST',
-    body: JSON.stringify({content: edArts.join('\n') + '\n', encoding: 'utf-8'})});
-  await commit2(message, [{path: 'arts.txt', sha: blob.sha}]);
+async function edSaveArts(message, change) {
+  const texts = await commit2(message, [], [{path: 'arts.txt',
+    apply: s => change(s.replace(/\n$/, '').split('\n')).join('\n') + '\n'}]);
+  edArts = texts['arts.txt'].replace(/\n$/, '').split('\n');
 }
 
-const edArtIndex = art => edArts.findIndex(l => l.trim().toUpperCase() === art.toUpperCase());
+const sameArt = (l, art) => l.trim().toUpperCase() === art.toUpperCase();
+const edArtIndex = art => edArts.findIndex(l => sameArt(l, art));
 
 async function edAddArt() {
   const art = $('#ed-new-art').value.trim().toUpperCase();
@@ -71,27 +87,24 @@ async function edAddArt() {
   if (!/^[A-ZА-Я0-9-]{4,20}$/.test(art)) return toast('Это не похоже на артикул', 'err');
   if (edArtIndex(art) >= 0) return toast('Этот артикул уже в каталоге', 'err');
   try {
-    edArts.push(art);
-    await edSaveArts(`Каталог: добавлен ${art}`);
+    await edSaveArts(`Каталог: добавлен ${art}`, lines => lines.some(l => sameArt(l, art)) ? lines : [...lines, art]);
     $('#ed-new-art').value = '';
     toast('Добавлено. Карточка появится через 1–2 минуты, если артикул есть в таблице.');
-  } catch (e) { edArts.pop(); toast('Не получилось: ' + e.message, 'err'); }
+  } catch (e) { toast('Не получилось: ' + e.message, 'err'); }
 }
 
 async function edDropArt() {
   const t = edTiles.find(x => x.art === ED.current);
   if (!t) return;
   if (!confirm(`Убрать карточку «${t.name}»?\n\nОна пропадёт и в каталоге портала, и на витрине QR — обычно через несколько минут. Ночное обновление из таблицы её не вернёт.`)) return;
-  const i = edArtIndex(t.art);
-  if (i < 0) return toast('Этого артикула нет в arts.txt', 'err');
-  const [line] = edArts.splice(i, 1);
+  if (edArtIndex(t.art) < 0) return toast('Этого артикула нет в arts.txt', 'err');
   try {
-    await edSaveArts(`Каталог: убран ${t.art}`);
+    await edSaveArts(`Каталог: убран ${t.art}`, lines => lines.filter(l => !sameArt(l, t.art)));
     edTiles = edTiles.filter(x => x.art !== t.art);
     ED.current = null;
     edDrawList(); edDrawWork();
     toast('Карточка убрана. Портал и витрина обновятся через несколько минут.');
-  } catch (e) { edArts.splice(i, 0, line); toast('Не получилось: ' + e.message, 'err'); }
+  } catch (e) { toast('Не получилось: ' + e.message, 'err'); }
 }
 
 async function edLoadFiles() {
@@ -259,18 +272,18 @@ async function edSave() {
       }
     }
 
-    // тот же коммит обновляет карточку каталога
-    const data = JSON.parse(JSON.stringify(edData));
-    const tile = data.tiles.find(x => x.art === art);
-    tile.photos = names;
-    data.tiles.sort((a, b) => (a.photos.length ? 0 : 1) - (b.photos.length ? 0 : 1) ||
-      a.format.localeCompare(b.format) || a.name.localeCompare(b.name));
-    const blob = await gh2('/git/blobs', {method: 'POST', body: JSON.stringify({
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 1)))), encoding: 'base64'})});
-    ops.push({path: 'docs/data.json', sha: blob.sha});
-
-    await commit2(`Фото ${art}: ${names.length} шт.`, ops);
-    edData = data;
+    // тот же коммит обновляет карточку каталога — в свежей версии data.json
+    const setPhotos = s => {
+      const data = JSON.parse(s);
+      const tile = data.tiles.find(x => x.art === art);
+      if (!tile) throw new Error('карточку уже убрали из каталога');
+      tile.photos = names;
+      data.tiles.sort((a, b) => (a.photos.length ? 0 : 1) - (b.photos.length ? 0 : 1) ||
+        a.format.localeCompare(b.format) || a.name.localeCompare(b.name));
+      return JSON.stringify(data, null, 1);
+    };
+    const texts = await commit2(`Фото ${art}: ${names.length} шт.`, ops, [{path: 'docs/data.json', apply: setPhotos}]);
+    edData = JSON.parse(texts['docs/data.json']); edTiles = edData.tiles;
     await edLoadFiles();
     ED.draft = (ED.files[art] || []).map(p => ({...p, id: p.f}));
     edDrawList(); edDrawWork();
