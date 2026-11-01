@@ -225,7 +225,7 @@ async function renderCatalog() {
     drawActive();
     revealOnScroll(grid);
     // подстраховка: фото из кеша могли загрузиться до навешивания onload
-    grid.querySelectorAll('.ph img').forEach(i => { if (i.complete) i.classList.add('in'); });
+    grid.querySelectorAll('.ph img:not(.alt)').forEach(i => { if (i.complete) i.classList.add('in'); });
     try { sessionStorage.setItem(FSTATE, JSON.stringify(state())); } catch {}
   };
 
