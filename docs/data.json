@@ -9,8 +9,8 @@
    "pallet": "1пал-72м2-50уп-1440кг",
    "is_new": false,
    "stock": {
-    "msk": 141.12,
-    "tver": 561.6,
+    "msk": 213.12,
+    "tver": 489.6,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -151,57 +151,6 @@
    ]
   },
   {
-   "art": "VHF612501",
-   "name": "Бетон Лайт",
-   "format": "60×120",
-   "surface": "Матовая",
-   "packing": "1 уп-2шт-1,44м2-28,8 кг",
-   "pallet": "1пал-72м2-50уп-1440кг",
-   "is_new": false,
-   "stock": {
-    "msk": 217.44,
-    "tver": 203.04,
-    "msk_res": 0,
-    "tver_res": 0
-   },
-   "photos": [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09"
-   ]
-  },
-  {
-   "art": "VHP612098",
-   "name": "Грей Марбл Стоун",
-   "format": "60×120",
-   "surface": "Глянец",
-   "packing": "1 уп-2шт-1,44м2-27 кг",
-   "pallet": "1пал-72м2-50уп-1350кг",
-   "is_new": false,
-   "stock": {
-    "msk": 0,
-    "tver": 0,
-    "msk_res": 0,
-    "tver_res": 0
-   },
-   "photos": [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08"
-   ]
-  },
-  {
    "art": "VHP612390",
    "name": "Лейла",
    "format": "60×120",
@@ -287,7 +236,7 @@
    "is_new": false,
    "stock": {
     "msk": 133.56,
-    "tver": 47.52,
+    "tver": 249.12,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -358,7 +307,7 @@
    "pallet": "1пал-72м2-50уп-1440кг",
    "is_new": false,
    "stock": {
-    "msk": 178.56,
+    "msk": 171.36,
     "tver": 820.08,
     "msk_res": 0,
     "tver_res": 0
@@ -480,8 +429,8 @@
    "pallet": "1пал-72м2-50уп-1440кг",
    "is_new": false,
    "stock": {
-    "msk": 177.12,
-    "tver": 825,
+    "msk": 249.12,
+    "tver": 753,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -505,8 +454,8 @@
    "pallet": "1пал-72м2-50уп-1440кг",
    "is_new": false,
    "stock": {
-    "msk": 75.24,
-    "tver": 327.92,
+    "msk": 219.24,
+    "tver": 183.92,
     "msk_res": 33.12,
     "tver_res": 200.16
    },
@@ -652,8 +601,8 @@
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": false,
    "stock": {
-    "msk": 67.68,
-    "tver": 405.36,
+    "msk": 208.08,
+    "tver": 264.96,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -677,8 +626,8 @@
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": false,
    "stock": {
-    "msk": 82.8,
-    "tver": 280.8,
+    "msk": 176.4,
+    "tver": 131.4,
     "msk_res": 59.4,
     "tver_res": 0
    },
@@ -703,7 +652,7 @@
    "is_new": false,
    "stock": {
     "msk": 127.08,
-    "tver": 16.2,
+    "tver": 360,
     "msk_res": 5.4,
     "tver_res": 0
    },
@@ -757,8 +706,8 @@
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": false,
    "stock": {
-    "msk": 66.6,
-    "tver": 424.8,
+    "msk": 207,
+    "tver": 284.4,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -832,8 +781,8 @@
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": false,
    "stock": {
-    "msk": 35.28,
-    "tver": 2620.8,
+    "msk": 269.28,
+    "tver": 2854.8,
     "msk_res": 95.4,
     "tver_res": 0
    },
@@ -980,8 +929,8 @@
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": false,
    "stock": {
-    "msk": 140.76,
-    "tver": 405,
+    "msk": 234.36,
+    "tver": 311.4,
     "msk_res": 45,
     "tver_res": 0
    },
@@ -994,6 +943,32 @@
     "06",
     "07",
     "08"
+   ]
+  },
+  {
+   "art": "VHF600268",
+   "name": "Зевс Грей Лайт",
+   "format": "60×60",
+   "surface": "Матовая",
+   "packing": "1 уп-5 шт-1,8 м2-36кг",
+   "pallet": "1пал-46,8м2-26 уп-936кг",
+   "is_new": true,
+   "stock": {
+    "msk": 0,
+    "tver": 0,
+    "msk_res": 0,
+    "tver_res": 0
+   },
+   "photos": [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09"
    ]
   },
   {
@@ -1098,7 +1073,7 @@
    "is_new": false,
    "stock": {
     "msk": 5.4,
-    "tver": 0,
+    "tver": 1029.6,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -1267,7 +1242,7 @@
    "is_new": false,
    "stock": {
     "msk": 181.44,
-    "tver": 837,
+    "tver": 1519.2,
     "msk_res": 0,
     "tver_res": 46.8
    },
@@ -1370,7 +1345,7 @@
    "is_new": false,
    "stock": {
     "msk": 0,
-    "tver": 0,
+    "tver": 581.4,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -1394,8 +1369,8 @@
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": false,
    "stock": {
-    "msk": 141.12,
-    "tver": 1887.48,
+    "msk": 234.72,
+    "tver": 1793.88,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -1607,6 +1582,22 @@
    "stock": {
     "msk": 0,
     "tver": 0,
+    "msk_res": 0,
+    "tver_res": 0
+   },
+   "photos": []
+  },
+  {
+   "art": "VHF612501",
+   "name": "Бетон Лайт",
+   "format": "60×120",
+   "surface": "Матовая",
+   "packing": "1 уп-2шт-1,44м2-28,8 кг",
+   "pallet": "1пал-72м2-50уп-1440кг",
+   "is_new": false,
+   "stock": {
+    "msk": 217.44,
+    "tver": 203.04,
     "msk_res": 0,
     "tver_res": 0
    },
@@ -1857,22 +1848,6 @@
    "name": "Армани",
    "format": "60×60",
    "surface": "Глянец",
-   "packing": "1 уп-5 шт-1,8 м2-36кг",
-   "pallet": "1пал-46,8м2-26 уп-936кг",
-   "is_new": true,
-   "stock": {
-    "msk": 0,
-    "tver": 0,
-    "msk_res": 0,
-    "tver_res": 0
-   },
-   "photos": []
-  },
-  {
-   "art": "VHF600268",
-   "name": "Зевс Грей Лайт",
-   "format": "60×60",
-   "surface": "Матовая",
    "packing": "1 уп-5 шт-1,8 м2-36кг",
    "pallet": "1пал-46,8м2-26 уп-936кг",
    "is_new": true,
