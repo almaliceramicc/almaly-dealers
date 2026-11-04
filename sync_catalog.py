@@ -19,6 +19,19 @@ SURFACE = {"ГЛ": "Глянец", "MT": "Матовая", "МТ": "Матова
            "КАРВИНГ": "Карвинг", "ПАНЧ КАРВИНГ": "Панч-карвинг"}
 
 
+
+def order_rank():
+    """Артикул -> место из order.txt; не указанные идут после, по алфавиту."""
+    p = Path(__file__).parent / "order.txt"
+    lines = p.read_text(encoding="utf-8").splitlines() if p.exists() else []
+    arts = [l.split("#")[0].strip().upper() for l in lines]
+    return {a: i for i, a in enumerate(a for a in arts if a)}
+
+
+def tile_key(t, rank=None):
+    rank = order_rank() if rank is None else rank
+    return (not t["photos"], t["format"], rank.get(t["art"].upper(), len(rank)), t["name"])
+
 def norm(s):
     return " ".join(unicodedata.normalize("NFC", s or "").upper().replace("Ё", "Е").split())
 
@@ -110,7 +123,7 @@ def main():
         return disk_photos(art)
 
     tiles = [t | {"photos": photos_for(t["art"])} for t in catalog()]
-    tiles.sort(key=lambda t: (not t["photos"], t["format"], t["name"]))
+    tiles.sort(key=lambda t, r=order_rank(): tile_key(t, r))
 
     # Таблицу правят вручную: переименованная колонка артикулов однажды уже оставила
     # портал с пустым каталогом. Лучше уронить прогон, чем стереть живой сайт.

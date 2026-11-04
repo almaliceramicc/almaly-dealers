@@ -11,6 +11,7 @@ on:
       - "docs/img/**"
       - "docs/data.json"
       - "arts.txt"
+      - "order.txt"
       - "mirror_catalog.py"
       - ".github/workflows/mirror.yml"
   workflow_dispatch:
@@ -68,7 +69,8 @@ jobs:
         run: |
           git config user.name "almaly-bot"
           git config user.email "actions@github.com"
-          git add -A -- arts.txt photos
+          cp ../order.txt order.txt
+          git add -A -- arts.txt order.txt photos
           if git diff --cached --quiet; then
             echo "Витрина уже совпадает с порталом."
             exit 0

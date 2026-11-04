@@ -278,8 +278,9 @@ async function edSave() {
       const tile = data.tiles.find(x => x.art === art);
       if (!tile) throw new Error('карточку уже убрали из каталога');
       tile.photos = names;
+      // порядок внутри формата задаёт order.txt (ночная сборка), здесь его не ломаем
       data.tiles.sort((a, b) => (a.photos.length ? 0 : 1) - (b.photos.length ? 0 : 1) ||
-        a.format.localeCompare(b.format) || a.name.localeCompare(b.name));
+        a.format.localeCompare(b.format));
       return JSON.stringify(data, null, 1);
     };
     const texts = await commit2(`Фото ${art}: ${names.length} шт.`, ops, [{path: 'docs/data.json', apply: setPhotos}]);

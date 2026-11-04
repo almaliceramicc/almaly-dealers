@@ -39,6 +39,19 @@ ALIASES = {
 CYR = str.maketrans("АВЕКМНОРСТУХ", "ABEKMHOPCTYX")
 
 
+
+def order_rank():
+    """Артикул -> место из order.txt; не указанные идут после, по алфавиту."""
+    p = Path(__file__).parent / "order.txt"
+    lines = p.read_text(encoding="utf-8").splitlines() if p.exists() else []
+    arts = [l.split("#")[0].strip().upper() for l in lines]
+    return {a: i for i, a in enumerate(a for a in arts if a)}
+
+
+def tile_key(t, rank=None):
+    rank = order_rank() if rank is None else rank
+    return (not t["photos"], t["format"], rank.get(t["art"].upper(), len(rank)), t["name"])
+
 def norm(s):
     s = unicodedata.normalize("NFC", s).upper().replace("Ё", "Е").replace("*", "X")
     return " ".join(s.replace("Х", "X").split())
@@ -133,7 +146,7 @@ def main():
     for tile in data["tiles"]:
         if tile["art"] in photos:
             tile["photos"] = photos[tile["art"]]
-    data["tiles"].sort(key=lambda t: (not t["photos"], t["format"], t["name"]))
+    data["tiles"].sort(key=lambda t, r=order_rank(): tile_key(t, r))
     DATA.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
 
     print("\n".join(done))
