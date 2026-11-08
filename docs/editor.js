@@ -109,17 +109,7 @@ async function edDropArt() {
 
 async function edLoadFiles() {
   const tree = await gh2('/git/trees/main?recursive=1');
-  const byArt = {};
-  tree.tree.filter(x => x.type === 'blob')
-    .forEach(x => {
-      const m = x.path.match(/^docs\/img\/([^/]+)\/(\d+)(_t)?\.jpg$/);
-      if (!m) return;
-      const [, art, base, isThumb] = m;
-      const item = ((byArt[art] ||= {})[base] ||= {f: base + '.jpg'});
-      if (isThumb) item.thumbSha = x.sha; else item.sha = x.sha;
-    });
-  ED.files = Object.fromEntries(Object.entries(byArt).map(([art, m]) =>
-    [art, Object.keys(m).sort().map(k => m[k])]));
+  ED.files = PE.peGalleryFiles(edTiles, PE.peIndexImageTree(tree.tree));
 }
 
 const edRaw = (art, f, sha) =>
@@ -219,8 +209,9 @@ function edDrawWork() {
           первое фото становится обложкой и там.</p>
         <p>Загружено фотографий: <b>${kept.length}</b>. Рекомендуем JPG, вертикальные,
           не меньше 1000 px по длинной стороне — портал сам уменьшит их до 1600 px и сделает миниатюру.</p>
-        <p>Чужой логотип закрывается кнопкой ✎: кисть размытия только по мазку. Скачивается копия.
-          В каталог она попадает новым снимком и только после «Сохранить и опубликовать».</p>
+        <p>Чужой логотип закрывается кнопкой ✎. «Сохранить» пишет этот кадр в ту же позицию новым файлом
+          и не удаляет прежний. «Скачать» — копия на компьютер. «Сохранить и опубликовать» по-прежнему
+          отправляет все несохранённые правки карточки разом.</p>
       </div>
     </div>
 
@@ -308,7 +299,7 @@ async function edStart() {
     const repo = await gh2('');
     if (repo.permissions && !repo.permissions.push)
       throw new Error('у токена только чтение — нужен доступ на запись');
-    edData = await fetch('data.json', {cache: 'no-cache'}).then(r => r.json());
+    edData = JSON.parse(await readAt('main', 'docs/data.json'));
     edTiles = edData.tiles;
     await edLoadFiles();
     await edLoadArts();
@@ -414,10 +405,56 @@ function edEditPhoto(i) {
   const p = ED.draft[i];
   if (!p || p.deleted) return;
   const opts = edPhotoOpts();
+  const from = p.f ? p.f.replace(/\.jpg$/i, '') : '';
+  if (from) {
+    const slot = {art: ED.current, from, draftIndex: i};
+    opts.slot = slot;
+    opts.onSave = payload => edSaveSlot(slot, payload);
+  }
   if (p.full) opts.src = 'data:image/jpeg;base64,' + p.full;
   else {
     opts.src = edRaw(ED.current, p.f, p.sha);
     opts.fallbackSrc = 'img/' + encodeURIComponent(ED.current) + '/' + encodeURIComponent(p.f);
   }
   openPhotoEditor(opts);
+}
+
+async function edFileShas(art, stem) {
+  const one = async name => {
+    try { return (await gh2(`/contents/docs/img/${encodeURIComponent(art)}/${encodeURIComponent(name)}?ref=main`)).sha; }
+    catch (e) { if (e.status === 404) return null; throw e; }
+  };
+  const full = await one(stem + '.jpg');
+  const thumb = await one(stem + '_t.jpg');
+  if (!full && !thumb) return null;
+  return {full, thumb};
+}
+
+/** Один кадр: новый файл, ссылка в той же позиции. Остальной черновик не публикуется. */
+async function edSaveSlot(slot, payload) {
+  if (!slot.stem) slot.stem = PE.peEditStem(slot.from);
+  const result = await PE.peRunSlotSave({
+    blob: b64 => gh2('/git/blobs', {method: 'POST', body: JSON.stringify({content: b64, encoding: 'base64'})}),
+    readData: () => readAt('main', 'docs/data.json'),
+    fileShas: edFileShas,
+    commit: commit2,
+  }, {art: slot.art, from: slot.from, stem: slot.stem, fullB64: payload.fullB64, thumbB64: payload.thumbB64});
+  const item = ED.draft[slot.draftIndex];
+  if (item && result.status === 'saved') {
+    const old = item.f;
+    item.f = result.stem + '.jpg';
+    item.sha = result.fullSha;
+    item.thumbSha = result.thumbSha;
+    if (payload.preview) item.preview = payload.preview;
+    delete item.full; delete item.thumb;
+    const rec = (ED.files[slot.art] || []).find(p => p.f === old || p.f === item.f);
+    if (rec) { rec.f = item.f; rec.sha = item.sha; rec.thumbSha = item.thumbSha; }
+    const tile = edTiles.find(t => t.art === slot.art);
+    if (tile) tile.photos = result.photos.slice();
+    slot.from = result.stem;
+    slot.stem = null;
+    edDrawList();
+    edDrawWork();
+  }
+  return result;
 }

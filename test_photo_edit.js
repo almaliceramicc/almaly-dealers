@@ -166,4 +166,141 @@ const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
   assert.ok(!pe.includes('almaly-tiles'));
 }
 
+/* один кадр: новый файл, та же позиция, чужие поля целы */
+{
+  const raw = JSON.stringify({tiles: [
+    {art: 'A', name: 'Эн', photos: ['01', '02', '03'], stock: {msk: 4}},
+    {art: 'B', name: 'Би', photos: ['09']},
+  ]}, null, 1);
+  const out = PE.peApplySlot(raw, {art: 'A', from: '02', stem: '02eabc'});
+  const data = JSON.parse(out.text);
+  assert.deepStrictEqual(data.tiles[0].photos, ['01', '02eabc', '03']);
+  assert.strictEqual(data.tiles[0].stock.msk, 4);
+  assert.strictEqual(data.tiles[0].name, 'Эн');
+  assert.deepStrictEqual(data.tiles[1].photos, ['09']);
+  assert.strictEqual(data.tiles[1].name, 'Би');
+  const again = PE.peApplySlot(out.text, {art: 'A', from: '02', stem: '02eabc'});
+  assert.strictEqual(again.changed, false);
+  assert.throws(() => PE.peApplySlot(out.text, {art: 'A', from: 'нет', stem: 'zz'}), e => e.code === 'conflict');
+  assert.throws(() => PE.peApplySlot(out.text, {art: 'NO', from: '01', stem: 'z'}), e => e.code === 'gone');
+}
+
+{
+  const shas = PE.peIndexImageTree([
+    {type: 'blob', path: 'docs/img/A/02.jpg', sha: 's2'},
+    {type: 'blob', path: 'docs/img/A/01.jpg', sha: 's1'},
+    {type: 'blob', path: 'docs/img/A/02eabc.jpg', sha: 'se'},
+    {type: 'blob', path: 'docs/img/A/02eabc_t.jpg', sha: 'set'},
+    {type: 'blob', path: 'docs/img/A/note.txt', sha: 'no'},
+  ]);
+  const files = PE.peGalleryFiles([{art: 'A', photos: ['02eabc', '02']}], shas);
+  assert.deepStrictEqual(files.A.map(f => f.f), ['02eabc.jpg', '02.jpg']);
+  assert.strictEqual(files.A[0].sha, 'se');
+  assert.strictEqual(files.A[0].thumbSha, 'set');
+  assert.ok(!files.A.some(f => f.f === '01.jpg'));
+}
+
+(async () => {
+{
+  const base = JSON.stringify({tiles: [
+    {art: 'A', photos: ['01', '02'], keep: true},
+    {art: 'B', photos: ['09'], name: 'stay'},
+  ]}, null, 1);
+  const server = {data: base, shas: null, commits: 0, ops: []};
+  const io = {
+    async blob(b) { return {sha: 'sha:' + b}; },
+    async readData() { return server.data; },
+    async fileShas() { return server.shas; },
+    async commit(message, ops, edits) {
+      server.commits++;
+      server.ops.push(ops);
+      server.data = edits[0].apply(server.data);
+      server.shas = {full: ops[0].sha, thumb: ops[1].sha};
+      if (server.commits === 1) throw new TypeError('обрыв');
+      return {'docs/data.json': server.data};
+    },
+  };
+  const job = {art: 'A', from: '01', stem: '01eabc', fullB64: 'FULL', thumbB64: 'THUMB'};
+  await assert.rejects(() => PE.peRunSlotSave(io, job), e => e instanceof TypeError);
+  const photos = JSON.parse(server.data).tiles.find(t => t.art === 'A').photos;
+  assert.deepStrictEqual(photos, ['01eabc', '02']);
+  assert.ok(server.ops[0].every(o => o.sha && !String(o.path).endsWith('/01.jpg')));
+  assert.deepStrictEqual(server.ops[0].map(o => o.path), [
+    'docs/img/A/01eabc.jpg', 'docs/img/A/01eabc_t.jpg',
+  ]);
+  const second = await PE.peRunSlotSave(io, job);
+  assert.strictEqual(second.status, 'saved');
+  assert.strictEqual(second.commit, false);
+  assert.strictEqual(server.commits, 1);
+  assert.strictEqual(JSON.parse(server.data).tiles[1].name, 'stay');
+}
+
+{
+  let commits = 0;
+  const io = {
+    async blob() { const e = new Error('код 403'); e.status = 403; throw e; },
+    async readData() { commits++; return '{}'; },
+    async fileShas() { return null; },
+    async commit() { commits++; },
+  };
+  await assert.rejects(() => PE.peRunSlotSave(io, {art: 'A', from: '01', stem: '01e', fullB64: 'a', thumbB64: 'b'}),
+    e => e.status === 403);
+  assert.strictEqual(commits, 0);
+}
+
+{
+  let commits = 0;
+  const io = {
+    async blob() { return {sha: 's'}; },
+    async readData() { throw new TypeError('Failed to fetch'); },
+    async fileShas() { return null; },
+    async commit() { commits++; },
+  };
+  await assert.rejects(() => PE.peRunSlotSave(io, {art: 'A', from: '01', stem: '01e', fullB64: 'a', thumbB64: 'b'}),
+    e => e instanceof TypeError);
+  assert.strictEqual(commits, 0);
+}
+
+{
+  let commits = 0;
+  const io = {
+    async blob() { return {sha: 's'}; },
+    async readData() { return JSON.stringify({tiles: [{art: 'A', photos: ['zz']}]}); },
+    async fileShas() { return null; },
+    async commit() { commits++; },
+  };
+  await assert.rejects(() => PE.peRunSlotSave(io, {art: 'A', from: '01', stem: '01e', fullB64: 'a', thumbB64: 'b'}),
+    e => e.code === 'conflict');
+  assert.strictEqual(commits, 0);
+}
+
+{
+  let started = 0;
+  let release;
+  const hold = new Promise(r => { release = r; });
+  const io = {
+    async blob() { started++; await hold; return {sha: 's' + started}; },
+    async readData() { return JSON.stringify({tiles: [{art: 'A', photos: ['01']}]}); },
+    async fileShas() { return null; },
+    async commit(m, ops, edits) { return {'docs/data.json': edits[0].apply(await this.readData())}; },
+  };
+  const job = {art: 'A', from: '01', stem: '01e', fullB64: 'a', thumbB64: 'b'};
+  const first = PE.peRunSlotSave(io, job);
+  const second = await PE.peRunSlotSave(io, job);
+  assert.deepStrictEqual(second, {status: 'busy'});
+  release();
+  const done = await first;
+  assert.strictEqual(done.status, 'saved');
+  assert.strictEqual(done.commit, true);
+  assert.strictEqual(started, 2);
+}
+
+{
+  await assert.rejects(() => PE.peRunSlotSave({
+    async blob() { return {sha: 's'}; }, async readData() { return '{}'; },
+    async fileShas() { return null; }, async commit() {},
+  }, {art: 'A', stem: 'x', fullB64: 'a', thumbB64: 'b'}), e => e.code === 'no-slot');
+}
+
 console.log('ok');
+})().catch(e => { console.error(e); process.exit(1); });

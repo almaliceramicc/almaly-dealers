@@ -149,6 +149,78 @@ window.showCors = async () => {
   }
   throw new Error('нет сообщения CORS');
 };
+window.runSaveUi = async () => {
+  const fail = [];
+  const check = (name, ok, extra) => { if (!ok) fail.push(name + (extra ? ' ' + extra : '')); };
+  const pat = await pattern(48, 36);
+  const url = URL.createObjectURL(pat.blob);
+  const strokeOnce = () => {
+    const c = document.getElementById('pe-canvas');
+    const rect = c.getBoundingClientRect();
+    const pt = clientAt(c, rect, 12, 10);
+    fire('pointerdown', pt.x, pt.y, 11, 'mouse');
+    fire('pointerup', pt.x, pt.y, 11, 'mouse');
+  };
+  let calls = 0;
+  let gate;
+  openPhotoEditor({
+    src: url, title: 'Слот', art: 'TEST',
+    slot: {from: '01', art: 'TEST'},
+    onSave: () => { calls++; return new Promise(res => { gate = res; }); },
+  });
+  await waitCanvas();
+  check('до правки скрыто', document.getElementById('pe-save').hidden);
+  strokeOnce();
+  check('после мазка видно', document.getElementById('pe-save').hidden === false);
+  check('подпись Сохранить', document.getElementById('pe-save').textContent === 'Сохранить');
+  document.getElementById('pe-undo').click();
+  check('назад прячет', document.getElementById('pe-save').hidden);
+  document.getElementById('pe-redo').click();
+  check('вперёд снова', document.getElementById('pe-save').hidden === false);
+  document.getElementById('pe-save').click();
+  document.getElementById('pe-save').click();
+  check('один запрос', calls === 1, String(calls));
+  check('ещё не успех', !/Сохранено/.test(document.getElementById('pe-status').textContent));
+  check('идёт запись', document.getElementById('pe-save').textContent.includes('Сохраняю'));
+  gate({status: 'saved'});
+  await sleep(30);
+  const okText = document.getElementById('pe-status').textContent;
+  check('успех после ответа', /Сохранено в каталоге/.test(okText) && /минут/.test(okText), okText);
+  check('после успеха скрыто', document.getElementById('pe-save').hidden);
+
+  let failed = 0;
+  openPhotoEditor({
+    src: url, slot: {from: '02', art: 'TEST'},
+    onSave: () => { failed++; return Promise.reject(new Error('код 500')); },
+  });
+  await waitCanvas();
+  strokeOnce();
+  document.getElementById('pe-save').click();
+  await sleep(30);
+  check('отказ сервера', /Не сохранилось/.test(document.getElementById('pe-status').textContent));
+  check('кнопка для повтора', document.getElementById('pe-save').hidden === false && document.getElementById('pe-save').textContent === 'Сохранить');
+  check('не успех при ошибке', !/Сохранено/.test(document.getElementById('pe-status').textContent));
+
+  let bare = 0;
+  openPhotoEditor({src: url, onSave: () => { bare++; return {status: 'saved'}; }});
+  await waitCanvas();
+  strokeOnce();
+  check('без слота нет кнопки', document.getElementById('pe-save').hidden);
+  check('честная подпись', !document.getElementById('pe-save-note').hidden && /не привязан/.test(document.getElementById('pe-save-note').textContent));
+  check('без слота не пишет', bare === 0);
+
+  let cancelSaves = 0;
+  openPhotoEditor({
+    src: url, slot: {from: '03', art: 'TEST'},
+    onSave: () => { cancelSaves++; return {status: 'saved'}; },
+  });
+  await waitCanvas();
+  strokeOnce();
+  window.__confirmYes = true;
+  document.getElementById('pe-cancel').click();
+  check('отмена не сохраняет', cancelSaves === 0 && !document.getElementById('pe-dialog'));
+  return fail;
+};
 window.runTests = async () => {
   const fail = [];
   const check = (name, ok, extra) => { if (!ok) fail.push(name + (extra ? ' ' + extra : '')); };
@@ -461,6 +533,8 @@ try {
 
   const found = await ev('window.runTests()', true);
   if (found && found.length) failures.push(...found);
+  const saveUi = await ev('window.runSaveUi()', true);
+  if (saveUi && saveUi.length) failures.push(...saveUi.map(x => 'save ' + x));
 
   await go(`http://127.0.0.1:${pagePort}/admin.html`);
   const gate = await ev(`({
