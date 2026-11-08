@@ -808,6 +808,8 @@ body.pe-open{overflow:hidden}
   touch-action:none;overscroll-behavior:contain}
 .pe-stage canvas{display:block;max-width:none;touch-action:none}
 .pe-actions{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
+.pe-save-note{color:var(--ink);background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-s);
+  padding:var(--s2) var(--s3);font-size:var(--t-s);line-height:1.45}
 .pe-actions .right{margin-left:auto;display:flex;flex-wrap:wrap;gap:var(--s2)}
 #pe-ring{position:fixed;border:1.5px solid #fff;box-shadow:0 0 0 1px #17191b;border-radius:50%;
   pointer-events:none;z-index:65}

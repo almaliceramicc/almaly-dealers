@@ -200,7 +200,114 @@
         undo.length = 0;
         redo.length = 0;
       },
+      baseline() { return new Uint8ClampedArray(original); },
+      markSaved() {
+        original = new Uint8ClampedArray(cur);
+        undo.length = 0;
+        redo.length = 0;
+      },
     };
+  }
+
+  function peEditStem(from, nonce) {
+    const base = String(from || 'p').replace(/[^A-Za-z0-9]/g, '').slice(0, 12) || 'p';
+    const id = nonce || (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
+    return (base + 'e' + String(id).replace(/[^A-Za-z0-9]/g, '')).slice(0, 40);
+  }
+
+  function peSafePart(value) {
+    return typeof value === 'string' && !!value && !value.includes('/') && !value.includes('\\') && value !== '.' && value !== '..';
+  }
+
+  function peLocateSlot(photos, from, stem) {
+    if (!Array.isArray(photos)) return null;
+    const atFrom = photos.indexOf(from);
+    const atStem = photos.indexOf(stem);
+    if (atFrom >= 0 && atStem >= 0) return {conflict: true};
+    if (atStem >= 0) return {index: atStem, cur: stem};
+    if (atFrom >= 0) return {index: atFrom, cur: from};
+    return null;
+  }
+
+  /** Меняет только ссылку одного кадра. Чужие карточки, порядок и прочие поля не трогает. */
+  function peApplySlot(text, job) {
+    if (!peSafePart(job.art) || !peSafePart(job.from) || !peSafePart(job.stem)) {
+      const e = new Error('Некорректное имя снимка'); e.code = 'conflict'; throw e;
+    }
+    const data = JSON.parse(text);
+    const tile = (data.tiles || []).find(t => t.art === job.art);
+    if (!tile) { const e = new Error('Карточку уже убрали из каталога'); e.code = 'gone'; throw e; }
+    const found = peLocateSlot(tile.photos, job.from, job.stem);
+    if (!found || found.conflict) {
+      const e = new Error('Этот кадр в каталоге уже заменили другим файлом. Откройте его заново. Запись не сделана.');
+      e.code = 'conflict'; throw e;
+    }
+    if (found.cur === job.stem) return {changed: false, text, index: found.index, photos: tile.photos.slice()};
+    tile.photos[found.index] = job.stem;
+    return {changed: true, text: JSON.stringify(data, null, 1), index: found.index, photos: tile.photos.slice()};
+  }
+
+  /**
+   * Запись одного кадра: новый файл и миниатюра, в каталоге меняется только ссылка.
+   * Успех — только после commit или если на сервере уже лежит тот же файл.
+   * Повтор использует тот же stem и не добавляет второй кадр.
+   */
+  async function peRunSlotSave(io, job) {
+    if (!job || !job.from) { const e = new Error('Этот файл не привязан к снимку в каталоге'); e.code = 'no-slot'; throw e; }
+    if (job.busy) return {status: 'busy'};
+    job.busy = true;
+    try {
+      const full = await io.blob(job.fullB64);
+      const thumb = await io.blob(job.thumbB64);
+      const raw = await io.readData();
+      const looked = peApplySlot(raw, job);
+      if (!looked.changed) {
+        const remote = await io.fileShas(job.art, job.stem);
+        if (remote && remote.full === full.sha && remote.thumb === thumb.sha) {
+          return {status: 'saved', commit: false, photos: looked.photos, stem: job.stem, fullSha: full.sha, thumbSha: thumb.sha};
+        }
+      }
+      const ops = [
+        {path: `docs/img/${job.art}/${job.stem}.jpg`, sha: full.sha},
+        {path: `docs/img/${job.art}/${job.stem}_t.jpg`, sha: thumb.sha},
+      ];
+      const texts = await io.commit(`Фото ${job.art}: кадр ${job.from} → ${job.stem}`, ops, [{
+        path: 'docs/data.json',
+        apply: s => peApplySlot(s, job).text,
+      }]);
+      const after = JSON.parse(texts['docs/data.json']);
+      const tile = (after.tiles || []).find(t => t.art === job.art);
+      if (!tile || !tile.photos.includes(job.stem)) throw new Error('каталог не подтвердил этот кадр');
+      if (tile.photos.includes(job.from)) throw new Error('старая ссылка осталась в карточке');
+      return {status: 'saved', commit: true, photos: tile.photos.slice(), stem: job.stem, fullSha: full.sha, thumbSha: thumb.sha, ops};
+    } finally { job.busy = false; }
+  }
+
+  function peIndexImageTree(entries) {
+    const shas = {};
+    for (const x of entries || []) {
+      if (x.type && x.type !== 'blob') continue;
+      const m = String(x.path || '').match(/^docs\/img\/([^/]+)\/([^/]+?)(_t)?\.jpg$/);
+      if (!m || !/^[A-Za-z0-9_-]{1,40}$/.test(m[2])) continue;
+      const item = ((shas[m[1]] ||= {})[m[2]] ||= {});
+      if (m[3]) item.thumbSha = x.sha; else item.sha = x.sha;
+    }
+    return shas;
+  }
+
+  function peGalleryFiles(tiles, shas) {
+    const out = {};
+    for (const t of tiles || []) {
+      const bag = (shas && shas[t.art]) || {};
+      out[t.art] = (t.photos || []).map(stem => {
+        const hit = bag[stem] || {};
+        const item = {f: stem + '.jpg'};
+        if (hit.sha) item.sha = hit.sha;
+        if (hit.thumbSha) item.thumbSha = hit.thumbSha;
+        return item;
+      });
+    }
+    return out;
   }
 
   function hexToRgb(hex) {
@@ -251,11 +358,13 @@
         <div class="pe-actions">
           <button type="button" class="btn" id="pe-cancel">Отмена</button>
           <span class="right">
+            <button type="button" class="btn primary" id="pe-save" hidden>Сохранить</button>
             <button type="button" class="btn" id="pe-jpg" disabled>Скачать JPEG</button>
             <button type="button" class="btn" id="pe-png" disabled>Скачать PNG</button>
-            <button type="button" class="btn primary" id="pe-draft" hidden>Копия в черновик</button>
+            <button type="button" class="btn" id="pe-draft" hidden>Копия в черновик</button>
           </span>
         </div>
+        <p class="pe-save-note" id="pe-save-note" hidden>Этот файл не привязан к снимку в каталоге. «Сохранить» его некуда — скачайте копию. Каталог сам не выбирается.</p>
       </div>`;
     document.body.appendChild(back);
     const ring = document.createElement('div');
@@ -269,9 +378,10 @@
     const stage = $('pe-stage');
     const title = opts.title ? 'Редактор фото — ' + opts.title : 'Редактор фото';
     $('pe-title').textContent = title;
-    $('pe-note').textContent = opts.onDraft
-      ? 'Размытие действует только на мазок: логотип под кистью становится нечитаемым, остальной снимок не меняется. Это не восстановление картинки. Оригинал не перезаписывается. «Скачать» кладёт копию в загрузки. «Копия в черновик» добавляет новый снимок рядом со старым — на сайт он попадёт только после «Сохранить и опубликовать».'
-      : 'Размытие действует только на мазок: логотип под кистью становится нечитаемым, остальной снимок не меняется. Это не восстановление картинки. Скачанная копия в каталог не записывается.';
+    const slotOk = !!(opts.slot && opts.slot.from);
+    $('pe-note').textContent = slotOk
+      ? 'Размытие действует только на мазок. «Сохранить» записывает этот кадр в ту же позицию карточки новым файлом и не удаляет прежний. Страница на сайте обновится через 1–2 минуты — это ещё не открытие у всех. «Скачать» кладёт копию только на компьютер.'
+      : 'Размытие действует только на мазок. Этот файл не из карточки: «Сохранить» его некуда, каталог сам не выбирается. Можно скачать копию.';
     $('pe-draft').hidden = !opts.onDraft;
 
     let session = null;
@@ -279,6 +389,7 @@
     let zoom = 1;
     let stroke = null;
     let dirty = false;
+    let saving = false;
     const pointers = new Map();
     let pinch = null;
     const onKey = e => {
@@ -303,14 +414,26 @@
       if (tool === 'pick') ring.hidden = true;
     }
 
+    function sameBytes(a, b) {
+      if (!a || !b || a.length !== b.length) return false;
+      for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+      return true;
+    }
+    function refreshDirty() {
+      dirty = !!(session && !sameBytes(session.pixels(), session.baseline()));
+    }
     function syncHist() {
       const on = !!session;
+      const slotOk = !!(opts.slot && opts.slot.from);
       $('pe-undo').disabled = !on || !session.canUndo();
       $('pe-redo').disabled = !on || !session.canRedo();
       $('pe-reset').disabled = !on || !dirty;
       $('pe-jpg').disabled = !on;
       $('pe-png').disabled = !on;
       $('pe-draft').disabled = !on;
+      $('pe-save').hidden = !(dirty && slotOk);
+      $('pe-save').disabled = saving || !dirty;
+      $('pe-save-note').hidden = !(dirty && !slotOk);
     }
 
     function paintCanvas(px, w, h) {
@@ -454,7 +577,7 @@
       let changed = false;
       if (s.tool === 'blur') changed = session.commitEffect(s.mask, s.effect);
       else changed = session.commitColor(s.mask, s.color[0], s.color[1], s.color[2]);
-      if (changed) dirty = true;
+      if (changed) refreshDirty();
       redraw();
       syncHist();
     }
@@ -477,16 +600,16 @@
     }
 
     function doUndo() {
-      if (!session || stroke) return;
+      if (!session || stroke || saving) return;
       if (!session.undo()) return;
-      dirty = session.canUndo() || session.canRedo();
+      refreshDirty();
       redraw();
       syncHist();
     }
     function doRedo() {
-      if (!session || stroke) return;
+      if (!session || stroke || saving) return;
       if (!session.redo()) return;
-      dirty = true;
+      refreshDirty();
       redraw();
       syncHist();
     }
@@ -597,6 +720,19 @@
       finally { URL.revokeObjectURL(url); }
     }
 
+    function jpegB64(source, maxEdge, quality) {
+      const edge = Math.max(source.width, source.height);
+      const scale = maxEdge ? Math.min(1, maxEdge / edge) : 1;
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(source.width * scale));
+      c.height = Math.max(1, Math.round(source.height * scale));
+      const g = c.getContext('2d');
+      g.imageSmoothingEnabled = true;
+      g.imageSmoothingQuality = 'high';
+      g.drawImage(source, 0, 0, c.width, c.height);
+      return c.toDataURL('image/jpeg', quality).split(',')[1];
+    }
+
     function download(type, quality, ext) {
       if (!session) return;
       const c = document.createElement('canvas');
@@ -636,7 +772,7 @@
       if (!session || !dirty) return;
       if (!confirm('Вернуть снимок к виду на момент открытия? Мазки этой сессии пропадут.')) return;
       session.reset();
-      dirty = false;
+      refreshDirty();
       redraw();
       syncHist();
       $('pe-status').textContent = 'Сброс. Оригинал в каталоге и не менялся.';
@@ -651,6 +787,32 @@
     };
     $('pe-fit').onclick = fit;
     $('pe-cancel').onclick = closeAsk;
+    $('pe-save').onclick = async () => {
+      if (!session || saving || !dirty) return;
+      if (!(opts.slot && opts.slot.from) || typeof opts.onSave !== 'function') {
+        $('pe-status').textContent = 'Этот файл не привязан к снимку в каталоге. Сохранить его некуда — скачайте копию.';
+        return;
+      }
+      saving = true;
+      $('pe-save').disabled = true;
+      $('pe-save').textContent = 'Сохраняю…';
+      $('pe-status').textContent = 'Записываю снимок в каталог…';
+      try {
+        const fullB64 = jpegB64(canvas, null, 0.92);
+        const thumbB64 = jpegB64(canvas, 700, 0.85);
+        const result = await opts.onSave({fullB64, thumbB64, preview: 'data:image/jpeg;base64,' + thumbB64});
+        if (!result || result.status !== 'saved') throw new Error('сервер не подтвердил запись');
+        session.markSaved();
+        refreshDirty();
+        $('pe-status').textContent = 'Сохранено в каталоге, в том же кадре. Прежний файл не удалён. Страница на сайте обновится через 1–2 минуты — сохранение ещё не значит, что она уже открылась у всех.';
+      } catch (e) {
+        $('pe-status').textContent = 'Не сохранилось: ' + (e && e.message ? e.message : 'ошибка сети') + '. Правка на месте, нажмите «Сохранить» ещё раз.';
+      } finally {
+        saving = false;
+        $('pe-save').textContent = 'Сохранить';
+        syncHist();
+      }
+    };
     $('pe-jpg').onclick = () => download('image/jpeg', 0.92, 'jpg');
     $('pe-png').onclick = () => download('image/png', undefined, 'png');
     $('pe-draft').onclick = async () => {
@@ -748,5 +910,6 @@
   return {
     MAX_EDGE, peBlur, peStampDisc, peApply, peApplyColor, peViewToImage, peInterpolate,
     createPhotoSession, openPhotoEditor, hexToRgb, rgbToHex,
+    peEditStem, peApplySlot, peRunSlotSave, peIndexImageTree, peGalleryFiles,
   };
 });
