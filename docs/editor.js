@@ -169,7 +169,8 @@ function edDrawWork() {
   const box = $('#ed-work');
   if (!t) {
     box.innerHTML = `<div class="empty"><h3>Выберите модель</h3>
-      <p>Слева список каталога: найдите модель по названию или артикулу — справа откроются её фотографии.</p></div>`;
+      <p>Слева список каталога: найдите модель по названию или артикулу — справа откроются её фотографии.</p>
+      <p><button class="btn sm" id="ed-photo" type="button">Редактировать свой файл</button></p></div>`;
     return;
   }
 
@@ -183,7 +184,8 @@ function edDrawWork() {
       <span class="acts">
         ${p.deleted
           ? `<button class="icon" data-eact="undo" data-i="${i}" title="Вернуть">↺</button>`
-          : `<button class="icon" data-eact="cover" data-i="${i}" title="Сделать обложкой">★</button>
+          : `<button class="icon" data-eact="edit" data-i="${i}" title="Редактировать копию">✎</button>
+             <button class="icon" data-eact="cover" data-i="${i}" title="Сделать обложкой">★</button>
              <button class="icon" data-eact="del" data-i="${i}" title="Удалить">✕</button>`}
       </span>
     </div>`;
@@ -202,6 +204,7 @@ function edDrawWork() {
       </div>
       <div class="right">
         <a class="btn sm" href="tile.html?a=${t.art}" target="_blank" rel="noopener">Открыть в каталоге ↗</a>
+        <button class="btn sm" id="ed-photo" type="button">Редактировать файл</button>
         <button class="btn sm" id="ed-drop-art" type="button">Убрать карточку</button>
       </div>
     </div>
@@ -216,6 +219,8 @@ function edDrawWork() {
           первое фото становится обложкой и там.</p>
         <p>Загружено фотографий: <b>${kept.length}</b>. Рекомендуем JPG, вертикальные,
           не меньше 1000 px по длинной стороне — портал сам уменьшит их до 1600 px и сделает миниатюру.</p>
+        <p>Чужой логотип закрывается кнопкой ✎: кисть размытия только по мазку. Скачивается копия.
+          В каталог она попадает новым снимком и только после «Сохранить и опубликовать».</p>
       </div>
     </div>
 
@@ -341,11 +346,13 @@ function initEditor() {
   });
 
   $('#ed-work').addEventListener('click', e => {
-    const b = e.target.closest('button[data-eact], #ed-save, #ed-reset, #ed-drop-art'); if (!b) return;
+    const b = e.target.closest('button[data-eact], #ed-save, #ed-reset, #ed-drop-art, #ed-photo'); if (!b) return;
     if (b.id === 'ed-save') return edSave();
     if (b.id === 'ed-drop-art') return edDropArt();
+    if (b.id === 'ed-photo') return edEditFile();
     if (b.id === 'ed-reset') { ED.draft = (ED.files[ED.current] || []).map(p => ({...p, id: p.f})); return edDrawWork(); }
     const i = +b.dataset.i, p = ED.draft[i];
+    if (b.dataset.eact === 'edit') return edEditPhoto(i);
     if (b.dataset.eact === 'del') p.deleted = true;
     if (b.dataset.eact === 'undo') delete p.deleted;
     if (b.dataset.eact === 'cover') { ED.draft.splice(i, 1); ED.draft.unshift(p); }
@@ -375,7 +382,7 @@ function initEditor() {
   if (ED.token) edStart();
 }
 
-async function edAdd(files) {
+async function edAdd(files, note) {
   toast(`Готовлю ${files.length} фото…`);
   try {
     for (const file of files) {
@@ -383,6 +390,34 @@ async function edAdd(files) {
       ED.draft.push({id: 'new-' + Math.random().toString(36).slice(2), full, thumb, preview});
     }
     edDrawWork();
-    toast('Фото добавлены. Нажмите «Сохранить и опубликовать».', 'ok');
+    toast(note || 'Фото добавлены. Нажмите «Сохранить и опубликовать».', 'ok');
   } catch (e) { toast(e.message); }
+}
+
+function edPhotoOpts() {
+  const t = edTiles.find(x => x.art === ED.current);
+  return {
+    title: t ? t.name : 'Свой файл',
+    art: ED.current || '',
+    onDraft: ED.current ? file => edAdd([file],
+      'Копия в черновике. Прежний снимок на месте. На сайт — только после «Сохранить и опубликовать».') : null,
+  };
+}
+
+function edEditFile() {
+  if (typeof openPhotoEditor !== 'function') return toast('Редактор фото не загрузился', 'err');
+  openPhotoEditor({...edPhotoOpts(), pick: true});
+}
+
+function edEditPhoto(i) {
+  if (typeof openPhotoEditor !== 'function') return toast('Редактор фото не загрузился', 'err');
+  const p = ED.draft[i];
+  if (!p || p.deleted) return;
+  const opts = edPhotoOpts();
+  if (p.full) opts.src = 'data:image/jpeg;base64,' + p.full;
+  else {
+    opts.src = edRaw(ED.current, p.f, p.sha);
+    opts.fallbackSrc = 'img/' + encodeURIComponent(ED.current) + '/' + encodeURIComponent(p.f);
+  }
+  openPhotoEditor(opts);
 }
