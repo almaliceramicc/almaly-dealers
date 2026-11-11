@@ -297,7 +297,6 @@ async function renderCatalog() {
   const fresh = tiles.filter(t => t.is_new).length;
   $('#s-new').textContent = fresh;
   $('#s-new').parentElement.hidden = !fresh;          // «0 новинок» на первом экране не показываем
-  $('#s-stock').textContent = nf(tiles.reduce((a, t) => a + t.stock.msk + t.stock.tver, 0), 0);
   $('#stat').textContent = `${tiles.length} моделей · обновление остатков ежедневно`;
 }
 
