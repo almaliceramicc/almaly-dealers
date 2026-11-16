@@ -66,9 +66,14 @@ async function commit2(message, ops, edits = []) {
 let edArts = [];              // arts.txt построчно, как лежит в репозитории
 
 async function edLoadArts() {
-  const r = await fetch(`https://raw.githubusercontent.com/${REPO}/main/arts.txt?t=` + Date.now(),
-                        {cache: 'no-store'});
-  edArts = (await r.text()).replace(/\n$/, '').split('\n');
+  try {
+    const text = await readAt('main', 'arts.txt');
+    edArts = text.replace(/\n$/, '').split('\n');
+  } catch {
+    const r = await fetch(`https://raw.githubusercontent.com/${REPO}/main/arts.txt?t=` + Date.now(),
+                          {cache: 'no-store'});
+    edArts = (await r.text()).replace(/\n$/, '').split('\n');
+  }
 }
 
 /** Пишет новый arts.txt; состав каталога пересобирает GitHub Action портала. */
@@ -78,19 +83,61 @@ async function edSaveArts(message, change) {
   edArts = texts['arts.txt'].replace(/\n$/, '').split('\n');
 }
 
-const sameArt = (l, art) => l.trim().toUpperCase() === art.toUpperCase();
+const CYR_MAP = {А:'A',В:'B',Е:'E',К:'K',М:'M',Н:'H',О:'O',Р:'P',С:'C',Т:'T',У:'Y',Х:'X'};
+const normArt = s => (s || '').trim().toUpperCase().replace(/[АВЕКМНОРСТУХ]/g, c => CYR_MAP[c] || c);
+const sameArt = (l, art) => normArt(l) === normArt(art);
 const edArtIndex = art => edArts.findIndex(l => sameArt(l, art));
 
 async function edAddArt() {
-  const art = $('#ed-new-art').value.trim().toUpperCase();
-  if (!art) return;
-  if (!/^[A-ZА-Я0-9-]{4,20}$/.test(art)) return toast('Это не похоже на артикул', 'err');
-  if (edArtIndex(art) >= 0) return toast('Этот артикул уже в каталоге', 'err');
+  const input = $('#ed-new-art');
+  const btn = $('#ed-add-art');
+  const art = normArt(input?.value);
+  if (!art) {
+    input?.focus();
+    return toast('Введите артикул, например VHP600003', 'err');
+  }
+  if (!/^[A-Z0-9_-]{3,24}$/.test(art)) return toast('Это не похоже на артикул', 'err');
+
+  const existingTile = edTiles.find(x => normArt(x.art) === art);
+  if (existingTile) {
+    edSelect(existingTile.art);
+    return toast('Этот артикул уже в каталоге', 'err');
+  }
+
+  const ensureLocalTile = () => {
+    const is120 = art.includes('612');
+    const stub = {
+      art,
+      name: art,
+      format: is120 ? '60×120' : '60×60',
+      surface: art.startsWith('VHP') ? 'Глянец' : 'Матовая',
+      packing: is120 ? '1 уп-2шт-1,44м2-28,8 кг' : '1 уп-5шт-1,8м2-34 кг',
+      pallet: '',
+      is_new: true,
+      stock: {msk: 0, tver: 0, msk_res: 0, tver_res: 0},
+      photos: [],
+    };
+    edTiles.unshift(stub);
+    ED.files[art] = ED.files[art] || [];
+    edSelect(art);
+  };
+
+  if (edArtIndex(art) >= 0) {
+    ensureLocalTile();
+    return toast('Артикул уже есть в arts.txt — карточка откроется после синхронизации с таблицей');
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Добавляю…'; }
   try {
     await edSaveArts(`Каталог: добавлен ${art}`, lines => lines.some(l => sameArt(l, art)) ? lines : [...lines, art]);
-    $('#ed-new-art').value = '';
-    toast('Добавлено. Карточка появится через 1–2 минуты, если артикул есть в таблице.');
-  } catch (e) { toast('Не получилось: ' + e.message, 'err'); }
+    if (input) input.value = '';
+    ensureLocalTile();
+    toast('Добавлено. Данные из таблицы подтянутся за 1–2 мин., фото можно загружать уже сейчас.');
+  } catch (e) {
+    toast('Не получилось: ' + e.message, 'err');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Добавить карточку'; }
+  }
 }
 
 async function edDropArt() {
@@ -331,7 +378,9 @@ function initEditor() {
   $('#ed-token').addEventListener('keydown', e => e.key === 'Enter' && $('#ed-login').click());
   $('#ed-q').addEventListener('input', edDrawList);
   $('#ed-add-art').addEventListener('click', edAddArt);
-  $('#ed-new-art').addEventListener('keydown', e => e.key === 'Enter' && edAddArt());
+  $('#ed-new-art').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); edAddArt(); }
+  });
   $('#ed-list').addEventListener('click', e => {
     const b = e.target.closest('.item'); if (b) edSelect(b.dataset.art);
   });

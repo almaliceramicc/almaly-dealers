@@ -727,7 +727,7 @@ body.has-cart #toast{bottom:88px}
 .side-list{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:var(--s3);
   position:sticky;top:80px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;gap:var(--s2);
   box-shadow:var(--sh-1)}
-.side-scroll{overflow-y:auto;display:flex;flex-direction:column;gap:2px;margin:-4px;padding:4px}
+.side-scroll{overflow-y:auto;flex:1;min-height:0;display:flex;flex-direction:column;gap:2px;margin:-4px;padding:4px}
 .item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:var(--r-s);cursor:pointer;
   border:1px solid transparent;text-align:left;background:none;color:inherit;font:inherit;width:100%;
   min-height:var(--tap);transition:var(--fast) var(--ease)}
@@ -980,7 +980,7 @@ body.pe-open{overflow:hidden}
 }
 
 /* панель состава каталога в редакторе */
-.arts-add{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);
+.arts-add{flex:none;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);
   margin-top:10px;padding-top:10px}
 .arts-add input{width:100%;min-width:0;background:var(--panel-2,var(--panel));
   border:1px solid var(--line);color:var(--tx);padding:9px 11px;border-radius:10px;font:13px var(--sans)}
