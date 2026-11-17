@@ -32,10 +32,10 @@ const TVER_ETA_LOW = 'доставка в Москву — 1 день';   // д�
 
 /* ponytail: порог «мало» — 30 м² (≈20 упаковок 60×120); вынести в config, если появится своя норма. */
 const LOW_SQM = 30;
-/** Наличие словом и цветом: зелёный — достаточно, янтарный — мало, нейтральный — под заказ. */
+/** Наличие словом и цветом: зелёный — достаточно, янтарный — мало, нейтральный — в пути. */
 function availability(t) {
   const total = t.stock.msk + t.stock.tver;
-  if (total <= 0) return {cls: 'order', text: 'Под заказ'};
+  if (total <= 0) return {cls: 'order', text: 'В пути'};
   if (total < LOW_SQM) return {cls: 'low', text: 'Осталось мало'};
   return {cls: 'ok', text: 'В наличии'};
 }
@@ -283,7 +283,7 @@ async function renderCatalog() {
     const card = b.closest('.card');
     const t = tiles.find(x => x.art === b.dataset.add);
     addToCart(t, num(card.querySelector('[data-qty]').value),
-      t.stock.msk > 0 ? 'Москва' : t.stock.tver > 0 ? 'Тверь' : 'Под заказ');
+      t.stock.msk > 0 ? 'Москва' : t.stock.tver > 0 ? 'Тверь' : 'В пути');
     card.classList.add('added');
     b.textContent = 'Добавлено ✓';
     clearTimeout(card.t);
@@ -407,7 +407,7 @@ async function renderTile() {
               <select id="wh-sel">
                 <option value="Москва">Москва — ${m2(t.stock.msk)}</option>
                 <option value="Тверь">Тверь — ${m2(t.stock.tver)} · +1 день</option>
-                <option value="Под заказ">Под заказ</option>
+                <option value="В пути">В пути</option>
               </select></div>
           </div>
           <div class="calc-out" id="calc"></div>
@@ -432,7 +432,7 @@ async function renderTile() {
   });
 
   const need = $('#need'), whSel = $('#wh-sel');
-  whSel.value = t.stock.msk > 0 ? 'Москва' : t.stock.tver > 0 ? 'Тверь' : 'Под заказ';
+  whSel.value = t.stock.msk > 0 ? 'Москва' : t.stock.tver > 0 ? 'Тверь' : 'В пути';
   const calc = () => {
     const want = num(need.value), packs = packsFor(want, sqm), real = packs * sqm;
     const avail = whSel.value === 'Москва' ? t.stock.msk : whSel.value === 'Тверь' ? t.stock.tver : Infinity;
@@ -452,7 +452,7 @@ async function renderTile() {
         <path d="M12 8v5M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
       <span>На складе ${whSel.value} свободно ${m2(avail)}.
       ${other[1] > 0 ? `На складе ${other[0]} — ${m2(other[1])}.` : ''}
-      Недостающее оформим под заказ — менеджер подтвердит срок.</span></div>`);
+      Недостающее — в пути, менеджер подтвердит срок.</span></div>`);
     const info = $('#sticky-info');
     if (info) info.innerHTML = `<b>${packs} уп. · ${nf(real)} м²</b>${esc(whSel.value)}`;
   };

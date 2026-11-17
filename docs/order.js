@@ -39,7 +39,7 @@ function renderItems() {
       <td data-l="Упаковок"><b>${i.packs}</b></td>
       <td data-l="К отгрузке">${nf(i.packs * i.sqm)} м²${i.kg ? ` · ${nf(i.packs * i.kg, 0)} кг` : ''}</td>
       <td data-l="Склад"><select data-n="${n}" data-k="wh" aria-label="Склад: ${esc(i.name)}">
-        ${['Москва','Тверь','Под заказ'].map(w => `<option ${w === i.wh ? 'selected' : ''}>${w}</option>`).join('')}
+        ${['Москва','Тверь','В пути'].map(w => `<option ${w === i.wh ? 'selected' : ''}>${w}</option>`).join('')}
       </select></td>
       <td data-l="" class="cell-rm"><button class="icon-btn danger" data-rm="${n}" type="button"
         aria-label="Убрать ${esc(i.name)} из заявки">✕</button></td></tr>`).join('')}
